@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    active: dev
+
+  devtools:
+    restart:
+      additional-paths: resources/**,static/**,templates/**    #需要实时更新的目录
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hrm?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123
+    platform: mysql
+
+
+    # 配置DruidConfig配置类使其生效
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+  jackson:
+    time-zone: GMT+8     #springboot默认用Jackson框架转换，Jackson默认时区是GMT, 对于中国时间少8小时
+
+mybatis:
+  type-aliases-package: com.nood.hrm.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+
+#baseInfo
+api-url: /api
+
+
+#token:
+#  expire:
+#    seconds: 7200
+#  jwtSecret: (XIAO:)_$^11244^%$_(WEI:)_@@++--(LAO:)_++++_.sds_(SHI:)
+
+server:
+  port: 8080
+
+logging:
+  config: classpath:logbak-spring.xml
