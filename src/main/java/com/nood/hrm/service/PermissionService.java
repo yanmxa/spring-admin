@@ -8,4 +8,16 @@ public interface PermissionService {
     Response<JSONArray> listAllPermission();
 
     Response<Permission> listByRoleId(int i);
+
+    Response<Permission> getMenu(Long userId);
+
+    Response<Permission> getAllMenu();
+
+    Response<Permission> save(Permission permission);
+
+    Permission getPermissionById(Integer id);
+
+    Response<Permission> updatePermission(Permission permission);
+
+    Response<Permission> deleteById(Integer id);
 }

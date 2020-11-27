@@ -22,7 +22,7 @@
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body ">
-                    <form class="layui-form layui-col-space5">
+                    <form class="layui-form  layui-col-space5">
                         <div class="layui-inline layui-show-xs-block">
                             <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
                         </div>
@@ -47,17 +47,15 @@
                         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" permission="sys:user:del">删除</a>
                     </script>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 </body>
 <script>
-layui.use(['table', 'form'], function(){
-        var table = layui.table
-        var form = layui.form;
-
+    layui.use('table', function(){
+        var table = layui.table,
+            form = layui.form;
         table.render({
             elem: '#table'
             ,url: '/user/list' //数据接口
@@ -73,7 +71,7 @@ layui.use(['table', 'form'], function(){
                     ,{field: 'username', title: '用户名'}
                     ,{field: 'telephone', title: '手机'}
                     ,{field: 'status', title: '状态',  templet:function(d){
-                        return  d.status == '1' ? "启动" : "禁用";
+                        return  d.status == '1' ? "启动":"禁用";
                     }}
                     ,{field: 'birthday', title: '生日'}
                     ,{title:'操作', toolbar: '#barDemo' }
@@ -96,7 +94,7 @@ layui.use(['table', 'form'], function(){
                         data:{id:data.id},
                         dataType:'json',
                         success:function(result){
-                            layer.alert("删除成功", {icon: 1}, function (index1) {
+                            layer.alert("删除成功", {icon: 1},function (index1) {
                                 layer.close(index1);
                                 //xadmin.father_reload();
                                 table.reload('table');
@@ -118,10 +116,11 @@ layui.use(['table', 'form'], function(){
                 elem: '#table'
                 ,url: '/user/findUserByFuzzyUserName' //数据接口
                 ,page: true //开启分页
-                ,where: {
-                    "username": username
+                ,where:{
+                    "username":username
                 }
                 ,response: {
+
                     countName: 'count', //规定数据总数的字段名称，默认：count
                     dataName: 'datas' //规定数据列表的字段名称，默认：data
                 }
@@ -145,3 +144,4 @@ layui.use(['table', 'form'], function(){
     });
 </script>
 
+</html>

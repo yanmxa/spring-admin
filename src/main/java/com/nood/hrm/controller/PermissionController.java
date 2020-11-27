@@ -37,4 +37,52 @@ public class PermissionController {
         return permissionService.listByRoleId(roleDto.getId().intValue());
     }
 
+
+    @RequestMapping(value = "/menu", method = RequestMethod.GET)
+    @ResponseBody
+//    @ApiOperation(value = "获取菜单", notes = "获取用户所属角色下能显示的菜单")//描述
+//    @ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
+    public Response<Permission> getMenu(Long userId) {
+//        System.out.println("========" + userId);
+//        Long tempUserId = 1L;
+        return permissionService.getMenu(1L);
+    }
+
+    @GetMapping(value = "/menuAll")
+    @ResponseBody
+    public Response getAllMenu() {
+        return permissionService.getAllMenu();
+    }
+
+    @GetMapping(value = "/add")
+    public String addPermission(Model model) {
+        model.addAttribute("permission", new Permission());
+        return "permission/permission-add";
+    }
+
+    @PostMapping(value = "/add")
+    @ResponseBody
+    public Response<Permission> savePermission(@RequestBody Permission permission) {
+        return permissionService.save(permission);
+    }
+
+    @GetMapping(value = "/edit")
+    public String editPermission(Model model, Permission permission) {
+        model.addAttribute("permission", permissionService.getPermissionById(permission.getId()));
+        return "permission/permission-add";
+    }
+
+    @PostMapping(value = "/edit")
+    @ResponseBody
+    public Response<Permission> updatePermission(@RequestBody Permission permission) {
+        return permissionService.updatePermission(permission);
+    }
+
+    @GetMapping(value = "/delete")
+    @ResponseBody
+    public Response<Permission> deletePermission(Permission permission) {
+        return permissionService.deleteById(permission.getId());
+    }
+
+
 }
