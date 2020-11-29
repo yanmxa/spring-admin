@@ -11,6 +11,8 @@ import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,6 +40,7 @@ public class UserController {
 
     @GetMapping("/list")
     @ResponseBody
+    @PreAuthorize("hasAuthority('sys:user:query')")
     public Response<User> getUsers(TableRequest tableRequest) {
 
         tableRequest.countOffset();
@@ -47,6 +50,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/add")
+    @PreAuthorize("hasAuthority('sys:user:add')")
     public String addUser(Model model) {
         model.addAttribute("user",new User());
         return "user/user-add";
@@ -54,15 +58,15 @@ public class UserController {
 
     @PostMapping(value = "/add")
     @ResponseBody
+    @PreAuthorize("hasAuthority('sys:user:add')")
     public Response<User> saveUser(UserDto userDto, Integer roleId) {
-        User user = null;
-        user = userService.getUserByPhone(userDto.getTelephone());
+        User user = userService.getUserByPhone(userDto.getTelephone());
         if (user != null && !user.getId().equals(userDto.getId())) {
             return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
         }
 
         userDto.setStatus(1);
-        userDto.setPassword(MD5.crypt(userDto.getPassword()));
+        userDto.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
         return userService.save(userDto, roleId);
     }
 
@@ -106,6 +110,12 @@ public class UserController {
 
         return userService.getUserByFuzzyUsername(username, tableRequest.getOffset(), tableRequest.getLimit());
 
+    }
+
+    @PostMapping("/changePassword")
+    @ResponseBody
+    public Response<User> changePassword(String username, String oldPassword, String newPassword) {
+        return userService.changePassword(username, oldPassword, newPassword);
     }
 
 }

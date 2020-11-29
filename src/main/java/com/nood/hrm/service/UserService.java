@@ -21,4 +21,6 @@ public interface UserService {
     int deleteUserById(Long id);
 
     Response<User> getUserByFuzzyUsername(String username, Integer offset, Integer limit);
+
+    Response<User> changePassword(String username, String oldPassword, String newPassword);
 }

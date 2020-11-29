@@ -41,4 +41,7 @@ public interface UserMapper {
     List<User> getUserByFuzzyUsernameWithPage(@Param("username") String username,
                                               @Param("startPosition") Integer offset,
                                               @Param("limit") Integer limit);
+
+    @Update("update sys_user t set t.password = #{password} where t.id = #{id}")
+    int changePassword(Long id, String password);
 }

@@ -6,8 +6,11 @@ import com.nood.hrm.mapper.RoleUserMapper;
 import com.nood.hrm.mapper.UserMapper;
 import com.nood.hrm.model.RoleUser;
 import com.nood.hrm.model.User;
+import com.nood.hrm.security.SpringSecurityConfig;
 import com.nood.hrm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,5 +102,18 @@ public class UserServiceImpl implements UserService {
         return Response.success(
                 userMapper.countUserByFuzzyUsername(username).intValue(),
                 userMapper.getUserByFuzzyUsernameWithPage(username, offset, limit));
+    }
+
+    @Override
+    public Response<User> changePassword(String username, String oldPassword, String newPassword) {
+        User user = userMapper.getUserByName(username);
+        if (user == null) {
+            return Response.failure("用户不存在");
+        }
+        if (!new BCryptPasswordEncoder().encode(oldPassword).equals(user.getPassword())) {
+            return Response.failure("旧密码错误");
+        }
+        userMapper.changePassword(user.getId(), new BCryptPasswordEncoder().encode(newPassword));
+        return Response.success();
     }
 }
