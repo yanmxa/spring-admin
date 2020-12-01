@@ -19,8 +19,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -46,7 +48,6 @@ public class UserController {
         tableRequest.countOffset();
 
         return userService.getAllUserByPage(tableRequest.getOffset(), tableRequest.getLimit());
-
     }
 
     @GetMapping(value = "/add")
@@ -99,6 +100,16 @@ public class UserController {
         int count = userService.deleteUserById(userDto.getId());
         if (count > 0) return Response.success();
         else return Response.failure();
+    }
+
+    @RequestMapping(value = "/deleteByIdList", method = RequestMethod.POST)
+    @ResponseBody
+    public Response DeleteByIdList(@RequestParam("idList") List<Integer> idList) {
+        for (Integer id : idList) {
+            int count = userService.deleteUserById(id.longValue());
+            if (count < 0) return Response.failure("删除失败");
+        }
+        return Response.success();
     }
 
 

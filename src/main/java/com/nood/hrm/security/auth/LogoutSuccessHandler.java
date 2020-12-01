@@ -16,5 +16,6 @@ public class LogoutSuccessHandler implements org.springframework.security.web.au
             HttpServletResponse httpServletResponse,
             Authentication authentication) throws IOException, ServletException {
         httpServletResponse.sendRedirect("/login");
+//        httpServletResponse.sendRedirect("/");
     }
 }

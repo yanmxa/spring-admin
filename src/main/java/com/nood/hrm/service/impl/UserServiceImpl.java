@@ -108,12 +108,13 @@ public class UserServiceImpl implements UserService {
     public Response<User> changePassword(String username, String oldPassword, String newPassword) {
         User user = userMapper.getUserByName(username);
         if (user == null) {
-            return Response.failure("用户不存在");
+            return Response.failure(1, "用户不存在");
         }
-        if (!new BCryptPasswordEncoder().encode(oldPassword).equals(user.getPassword())) {
-            return Response.failure("旧密码错误");
+        if (!new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
+            return Response.failure(1,"旧密码错误");
         }
         userMapper.changePassword(user.getId(), new BCryptPasswordEncoder().encode(newPassword));
         return Response.success();
+
     }
 }

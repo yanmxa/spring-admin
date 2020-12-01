@@ -13,38 +13,45 @@
             <a>
                 <cite>用户列表</cite></a>
           </span>
-    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    <a class="layui-btn layui-btn-primary layui-btn-sm layui-btn-radius" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
 </div>
 
 <div class="layui-fluid">
     <div class="layui-row  layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-body ">
-                    <form class="layui-form  layui-col-space5">
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+
+                <div class="layui-card-body layui-row" style="margin-top: 10px">
+                    <div class="layui-col-md9">
+                        <form class="layui-form layui-inline">
+                            <div class="layui-inline layui-show-xs-block">
+                                <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-inline layui-show-xs-block">
+                                <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+                            </div>
+                        </form>
+
+                        <div class="layui-card-header layui-inline layui-btn-group">
+                            <button class="layui-btn" onclick="xadmin.open('添加用户','/user/add')" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn " id="deleteCheckedId" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
                         </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
 
-                <div class="layui-card-header">
-                    <button class="layui-btn layui-btn-danger" onclick="delAll()" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
-                    <button class="layui-btn" onclick="xadmin.open('添加用户','/user/add')" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
-                </div>
 
                 <div class="layui-card-body ">
                     <table class="layui-hide" id="table" lay-filter="member"></table>
                 </div>
 
-                <div class="layui-card-body ">
+
+                <div class="layui-card-body" style="text-align: center">
                     <script type="text/html" id="barDemo">
-                        <a class="layui-btn layui-btn-xs" lay-event="edit" permission="sys:user:edit">编辑</a>
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" permission="sys:user:del">删除</a>
+                        <div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit" permission="sys:user:edit"><i class="layui-icon"></i></a>
+                        <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del" permission="sys:user:del"><i class="layui-icon"></i></a>
+                        </div>
                     </script>
                 </div>
             </div>
@@ -60,10 +67,17 @@
             elem: '#table'
             ,url: '/user/list' //数据接口
             ,page: true //开启分页
+            // ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            // ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+            //     title: '提示'
+            //     ,layEvent: 'LAYTABLE_TIPS'
+            //     ,icon: 'layui-icon-tips'
+            // }]
             ,response: {
                 countName: 'count', //规定数据总数的字段名称，默认：count
                 dataName: 'datas' //规定数据列表的字段名称，默认：data
             }
+            ,cellMinWidth: 100
             ,cols: [
                 [ //表头
                     {type: 'checkbox', fixed: 'left'}
@@ -74,7 +88,7 @@
                         return  d.status == '1' ? "启动":"禁用";
                     }}
                     ,{field: 'birthday', title: '生日'}
-                    ,{title:'操作', toolbar: '#barDemo' }
+                    ,{title:'操作', toolbar: '#barDemo',align:'center'}
                 ]
             ],
             done: function(){
@@ -87,21 +101,23 @@
             var data = obj.data;
             if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
-
                     $.ajax({
                         url:"/user/delete",
                         type:"GET",
                         data:{id:data.id},
                         dataType:'json',
-                        success:function(result){
-                            layer.alert("删除成功", {icon: 1},function (index1) {
-                                layer.close(index1);
-                                //xadmin.father_reload();
+                        success:function(data){
+
+                            if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
+                                layer.alert(data.msg);
+                            } else {
                                 table.reload('table');
-                            });
+                                layer.msg('已删除!', {icon: 1, time: 500});
+                            }
+
                         },
                     });
-
+                    layer.close(index);
                 });
             } else if(obj.event === 'edit'){
                 xadmin.open('编辑用户信息','/user/edit/?id='+data.id);
@@ -140,6 +156,39 @@
             });
             return false;
         });
+
+        $('#deleteCheckedId').on('click', function () {
+            var checkStatus = table.checkStatus('table'), data = checkStatus.data;
+            var ids = [];
+            $.each(data, function (index, item) {
+                // alert(item.username)
+                ids.push(item.id);
+            });
+
+            layer.confirm('确定要删除吗?', function (index) {
+                $.ajax({
+                    type:'post',
+                    url: '/user/deleteByIdList',
+                    data: {"idList": ids},
+                    traditional: true,
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
+                            layer.alert(data.msg);
+                        } else {
+                            table.reload('table');
+                            layer.msg('已删除!', {icon: 1, time: 500});
+                        }
+                    },
+                    error: function (data) {
+                        layer.alert("抱歉，出现未知错误！", {icon: 5});
+                    }
+                });
+                // layer.close(index);
+            });
+        });
+
+
         checkPermission();
     });
 </script>

@@ -49,6 +49,9 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Response getMenu(Long userId) {
         List<Permission> permissionList = permissionMapper.listByUserId(userId);
+
+        permissionList.sort((o1, o2) -> o1.getSort().compareTo(o2.getSort()));
+
         List<Permission> permissions = permissionList.stream()
                 .filter(permission -> permission.getType().equals(1))
                 .collect(Collectors.toList());
@@ -59,8 +62,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Response<Permission> getAllMenu() {
-
-        return Response.success(0, permissionMapper.findAll());
+        List<Permission> allPermissions = permissionMapper.findAll();
+        allPermissions.sort((o1, o2) -> o1.getSort().compareTo(o2.getSort()));
+        return Response.success(0,allPermissions);
     }
 
     @Override

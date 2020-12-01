@@ -19,7 +19,7 @@ public interface PermissionMapper {
     @Select("select sp.* from sys_role_user sru " +
             "inner join sys_role_permission srp on sru.roleId = srp.roleId " +
             "left join sys_permission sp on srp.permissionId = sp.id " +
-            "where sru.userId = #{userId}")
+            "where sru.userId = #{userId} order by sp.sort")
     List<Permission> listByUserId(Long userId);
 
     @Options(useGeneratedKeys = true, keyProperty = "id")

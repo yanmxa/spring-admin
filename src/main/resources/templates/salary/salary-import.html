@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Friday-System</title>
+    <header th:replace="header::html"></header>
+</head>
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a>首页</a>
+        <a>工资管理</a>
+        <a>
+          <cite>导入其他工资项</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-primary layui-btn-sm layui-btn-radius" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">&#xe669;</i>
+    </a>
+</div>
+
+<div class="x-body layui-anim layui-anim-up">
+    <span style="font-size: 18px;">导入工资数据：</span><br>
+    <br>
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding-bottom: 40px">
+            <form id="uploadForm">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-primary" id="selectId">选择文件</button>
+                    <button type="button" class="layui-btn" id="uploadId">开始上传</button>
+                </div>
+                <!--<input class="layui-btn  layui-btn-sm" type="button" value="点击上传文件" onclick="doUpload()" style="margin-left: 30px"/>-->
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use('upload', function () {
+        var $ = layui.jquery, upload = layui.upload;
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#selectId'
+            , url: '/salary/upload'
+            , auto: false
+            ,accept: 'file'
+            // ,multiple: true
+            , bindAction: '#uploadId'
+            , done: function (data) {
+                layer.msg(data.msg, {time: 4000});
+            },
+            error: function (data) {
+                layer.msg(data.msg, {icon: 5, time: 1000});
+            }
+        });
+    })
+</script>
+
+<!--<hr>-->
+
+<div class="x-body layui-anim layui-anim-up">
+    <span style="font-size: 18px;">薪酬数据字段：</span>
+    <br><br>
+    <div class="layui-card">
+        <div class="layui-card-body">
+                <form class="layui-form layui-inline">
+                    <div class="layui-inline layui-show-xs-block">
+                        <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline layui-show-xs-block">
+                        <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+                    </div>
+                </form>
+
+                <div class="layui-card-header layui-inline layui-btn-group">
+                    <button class="layui-btn" onclick="xadmin.open('添加用户','/user/add')" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
+                    <button class="layui-btn " id="deleteCheckedId" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
+                </div>
+        </div>
+
+        <div class="layui-card-body ">
+            <table class="layui-hide" id="table" lay-filter="member"></table>
+        </div>
+
+        <div class="layui-card-body" style="text-align: center">
+            <script type="text/html" id="barDemo">
+                <div class="layui-btn-group">
+                    <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit" permission="sys:user:edit"><i class="layui-icon"></i></a>
+                    <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del" permission="sys:user:del"><i class="layui-icon"></i></a>
+                </div>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('table', function(){
+        var table = layui.table,
+            form = layui.form;
+        table.render({
+            elem: '#table'
+            ,url: '/user/list' //数据接口
+            ,page: true //开启分页
+            ,response: {
+                countName: 'count', //规定数据总数的字段名称，默认：count
+                dataName: 'datas' //规定数据列表的字段名称，默认：data
+            }
+            ,cellMinWidth: 100
+            ,cols: [
+                [ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field: 'id', title: 'ID', align:'center', width:50}
+                    ,{field: 'username', title: '用户名'}
+                    ,{field: 'telephone', title: '手机'}
+                    ,{field: 'status', title: '状态',  templet:function(d){
+                        return  d.status == '1' ? "启动":"禁用";
+                    }}
+                    ,{field: 'birthday', title: '生日'}
+                    ,{title:'操作', toolbar: '#barDemo',align:'center'}
+                ]
+            ],
+            done: function(){
+                checkPermission()
+            }
+        });
+
+        //监听工具条
+        table.on('tool(member)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    $.ajax({
+                        url:"/user/delete",
+                        type:"GET",
+                        data:{id:data.id},
+                        dataType:'json',
+                        success:function(data){
+
+                            if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
+                                layer.alert(data.msg);
+                            } else {
+                                table.reload('table');
+                                layer.msg('已删除!', {icon: 1, time: 500});
+                            }
+
+                        },
+                    });
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                xadmin.open('编辑用户信息','/user/edit/?id='+data.id);
+            }
+        });
+
+
+        //搜索
+        form.on('submit(search)', function(data){
+            var username = data.field.username;
+            table.render({
+                elem: '#table'
+                ,url: '/user/findUserByFuzzyUserName' //数据接口
+                ,page: true //开启分页
+                ,where:{
+                    "username":username
+                }
+                ,response: {
+
+                    countName: 'count', //规定数据总数的字段名称，默认：count
+                    dataName: 'datas' //规定数据列表的字段名称，默认：data
+                }
+                ,cols: [
+                    [ //表头
+                        {type: 'checkbox', fixed: 'left'}
+                        ,{field: 'id', title: 'ID', align:'center', width:50}
+                        ,{field: 'username', title: '用户名'}
+                        ,{field: 'telephone', title: '手机'}
+                        ,{field: 'status', title: '状态',  templet:function(d){
+                            return  d.status == '1' ? "启动":"禁用";
+                        }}
+                        ,{field: 'birthday', title: '生日'}
+                        ,{title:'操作', toolbar: '#barDemo' }
+                    ]
+                ]
+            });
+            return false;
+        });
+
+        $('#deleteCheckedId').on('click', function () {
+            var checkStatus = table.checkStatus('table'), data = checkStatus.data;
+            var ids = [];
+            $.each(data, function (index, item) {
+                // alert(item.username)
+                ids.push(item.id);
+            });
+
+            layer.confirm('确定要删除吗?', function (index) {
+                $.ajax({
+                    type:'post',
+                    url: '/user/deleteByIdList',
+                    data: {"idList": ids},
+                    traditional: true,
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
+                            layer.alert(data.msg);
+                        } else {
+                            table.reload('table');
+                            layer.msg('已删除!', {icon: 1, time: 500});
+                        }
+                    },
+                    error: function (data) {
+                        layer.alert("抱歉，出现未知错误！", {icon: 5});
+                    }
+                });
+                // layer.close(index);
+            });
+        });
+        checkPermission();
+    });
+</script>
+
+</body>
+</html>

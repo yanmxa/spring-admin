@@ -15,7 +15,7 @@
     <!--<div class="message">后台管理系统</div>-->
     <div class="layadmin-user-login-box layadmin-user-login-header">
         <h2>人力资源管理系统</h2>
-        <p>中国兵器二〇二研究所</p>
+        <p>中国兵器工业集团第二〇二研究所</p>
     </div>
     <div id="darkbannerwrap"></div>
 
@@ -41,7 +41,6 @@
                     url : '/login',
                     data : $("#login-form").serialize(),
                     success : function(datas) {
-
                         if(datas.authenticated == true){
                             localStorage.setItem("userId", datas.principal.id);
                             localStorage.setItem("username", datas.principal.username);
@@ -52,10 +51,11 @@
                                 permission.push(authorities[i].authority);
                             }
                             localStorage.setItem("permission", JSON.stringify(permission));
-                            layer.msg("登录成功",{time:500},function(){
-                                location.href='/'
+                            layer.msg("登录成功", { time : 500}, function(){
+                                location.href='/';
+                                window.location.href = '/';
                             });
-                        }else{
+                        } else {
                             layer.msg("登录异常，请联系管理员");
                         }
                     },
@@ -63,6 +63,7 @@
                         var msg = xhr.responseText;
                         var response = JSON.parse(msg);
                         layer.msg(response.message);
+                        location.href='/'
                     }
                 });
                 return false;

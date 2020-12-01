@@ -43,5 +43,5 @@ public interface UserMapper {
                                               @Param("limit") Integer limit);
 
     @Update("update sys_user t set t.password = #{password} where t.id = #{id}")
-    int changePassword(Long id, String password);
+    int changePassword(@Param("id") Long id, @Param("password") String password);
 }
