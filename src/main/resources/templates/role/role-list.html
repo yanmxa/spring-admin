@@ -20,30 +20,48 @@
     <div class="layui-row  layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-body ">
-                    <form class="layui-form layui-col-space5">
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="roleName"  placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                <!--<div class="layui-card-body ">-->
+                    <!--<form class="layui-form layui-col-space5">-->
+                        <!--<div class="layui-inline layui-show-xs-block">-->
+                            <!--<input type="text" name="roleName"  placeholder="请输入角色名称" autocomplete="off" class="layui-input">-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline layui-show-xs-block">-->
+                            <!--<button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>-->
+                        <!--</div>-->
+                    <!--</form>-->
+                <!--</div>-->
+
+                <!--<div class="layui-card-header">-->
+                    <!--<button class="layui-btn layui-btn-danger" onclick="delAll()" permission="sys:role:del"><i class="layui-icon"></i>批量删除</button>-->
+                    <!--<button class="layui-btn" onclick="xadmin.open('添加角色','/role/add')" permission="sys:role:add"><i class="layui-icon"></i>添加</button>-->
+                <!--</div>-->
+
+                <div class="layui-card-header" style="margin-top: 20px;">
+                    <form class="layui-form layui-inline" style="width: 50%">
+                        <div class="layui-inline layui-show-xs-block" style="width: 30%">
+                            <input type="text"  style="width: 100%" name="roleName"  placeholder="请输入角色名称" autocomplete="off" class="layui-input">
                         </div>
                         <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+                            <button class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
                         </div>
                     </form>
-                </div>
 
-                <div class="layui-card-header">
-                    <button class="layui-btn layui-btn-danger" onclick="delAll()" permission="sys:role:del"><i class="layui-icon"></i>批量删除</button>
-                    <button class="layui-btn" onclick="xadmin.open('添加角色','/role/add')" permission="sys:role:add"><i class="layui-icon"></i>添加</button>
+                    <div class="layui-inline layui-btn-group" style="float: right">
+                        <button class="layui-btn" onclick="xadmin.open('添加角色','/role/add',600,450)" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
+                        <button class="layui-btn" id="delAll()" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
+                    </div>
                 </div>
 
                 <div class="layui-card-body ">
                     <table class="layui-hide" id="table" lay-filter="member"></table>
                 </div>
 
-                <div class="layui-card-body ">
+                <div class="layui-card-body">
                     <script type="text/html" id="barDemo">
-                        <a class="layui-btn layui-btn-xs" lay-event="edit" permission="sys:role:edit">编辑</a>
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" permission="sys:role:del">删除</a>
+                        <div class="layui-btn-group">
+                            <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit" permission="sys:user:edit"><i class="layui-icon"></i></a>
+                            <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del" permission="sys:user:del"><i class="layui-icon"></i></a>
+                        </div>
                     </script>
                 </div>
 

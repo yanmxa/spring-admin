@@ -85,6 +85,38 @@
 			<scope>test</scope>
 		</dependency>
 
+		 <!--&lt;!&ndash;create excel&ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>org.apache.poi</groupId>-->
+			<!--<artifactId>poi</artifactId>-->
+			<!--<version>4.1.1</version>-->
+		<!--</dependency>-->
+		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml &ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>org.apache.poi</groupId>-->
+			<!--<artifactId>poi-ooxml</artifactId>-->
+			<!--<version>4.1.1</version>-->
+		<!--</dependency>-->
+
+		<!-- 根据中文生成英文 -->
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.13</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

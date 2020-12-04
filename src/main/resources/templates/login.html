@@ -51,7 +51,7 @@
                                 permission.push(authorities[i].authority);
                             }
                             localStorage.setItem("permission", JSON.stringify(permission));
-                            layer.msg("登录成功", { time : 500}, function(){
+                            layer.msg("登录成功", {time : 1000, icon: 1, offset: 'rt'}, function(){
                                 location.href='/';
                                 window.location.href = '/';
                             });

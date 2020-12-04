@@ -13,7 +13,7 @@ public interface RoleUserMapper {
 
 //    @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into sys_role_user(userId, roleId) values(#{userId}, #{roleId})")
-    void save(RoleUser roleUser);
+    int save(RoleUser roleUser);
 
     @Select("select * from sys_role_user t where t.userId = #{userId}")
     RoleUser getRoleUserByUserId(Integer userId);

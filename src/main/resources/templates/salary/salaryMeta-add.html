@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <header th:replace="header::html"></header>
+</head>
+
+<body>
+<div class="x-body">
+    <form class="layui-form">
+
+        <input type="hidden" th:value="${salaryMeta.id}" name="id" />
+
+        <div class="layui-form-item">
+            <label for="L_username" class="layui-form-label">
+                <span class="x-red">*</span>薪酬字段
+            </label>
+            <div class="layui-input-inline" style="width: 66%">
+                <input type="text" id="L_username" th:value="${salaryMeta.name}" name="name" placeholder="字段名唯一" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red"></span>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="color: gray;">
+            <label for="L_username" class="layui-form-label">
+                <span class="x-red"></span>
+            </label>
+            <fieldset class="layui-elem-field" style="width: 66%;font-size: medium; min-height: 30px">
+                <legend style="font-size: small">修改记录</legend>
+                <div class="layui-field-box">
+                    <span th:text="${salaryMeta.history}" style="font-size: small; font-weight: normal" >"hello world fsdfadsfas fdsf f sddfasdfasf sdfdsfsdfsdfsdfds fdsf sdfdsfdsfasfdasf dsfs fs"</span>
+                </div>
+            </fieldset>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <label for="L_pass" class="layui-form-label">
+                <span class="x-red"></span>类型
+            </label>
+            <div class="layui-input-inline" style="width: 66%">
+                <input type="text" id="L_pass" th:value="${salaryMeta.type}" name="type" autocomplete="on" class="layui-input">
+            </div>
+            <!--<div class="layui-form-mid layui-word-aux">-->
+                <!--6到16个字符-->
+            <!--</div>-->
+        </div>
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+                <span class="x-red"></span>性质
+            </label>
+            <div class="layui-input-inline" style="width: 66%">
+                <input type="text" id="L_repass" th:value="${salaryMeta.property}" name="property" required="" autocomplete="on" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_nickname" class="layui-form-label">
+                <span class="x-red"></span>描述
+            </label>
+            <div class="layui-input-inline" style="width: 66%">
+                <input type="text" id="L_nickname" th:value="${salaryMeta.detail}" name="detail" required="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="is" class="layui-form-label">
+                <span class="x-red"></span>是否数值
+            </label>
+            <div class="layui-input-inline" style="width: 66%; margin-top: 8px">
+                <input type="checkbox" id="is" th:checked="${salaryMeta.isDecimal==1}" name="isDecimal" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label for="isUsed" class="layui-form-label">
+                <span class="x-red"></span>是否启用
+            </label>
+            <div class="layui-input-inline" style="width: 66%; margin-top: 8px">
+                <input type="checkbox" id="isUsed" th:checked="${salaryMeta.status==1}" name="status" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">
+            </div>
+        </div>
+
+
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="add" lay-submit="">
+                提交
+            </button>
+        </div>
+
+        <br>
+
+    </form>
+</div>
+<script>
+
+    layui.use(['form','layer', 'laydate'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+            ,laydate = layui.laydate;
+
+
+        //自定义验证规则
+        form.verify({
+            nikename: function(value){
+                if(value.length < 5){
+                    return '昵称至少得5个字符啊';
+                }
+            }
+            ,telephone: [/(.+){6,12}$/, '电话号码必须6到12位']
+            ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+            ,repass: function(value){
+                if($('#L_pass').val()!=$('#L_repass').val()){
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            // 获取checkbox值
+            data.field.status = 0
+            $('input:checkbox[name=status]:checked').each(function() {
+                data.field.status = 1
+            });
+            data.field.isDecimal = 0
+            $('input:checkbox[name=isDecimal]:checked').each(function() {
+                data.field.isDecimal = 1
+            });
+
+
+            var URL = "/salary/updateMeta"
+            if (data.field.id == undefined || data.field.id == "") {
+                URL = "/salary/addMeta"
+            }
+
+            $.ajax({
+                url : URL,
+                type:"POST",
+                data: data.field,
+                dataType:'json',
+                success:function(result){
+                    if(result.code == 500 || result.code == 5000100 || result.code == 5000101 || result.code == 5000102){
+                        layer.alert(result.msg);
+                    }else{
+                        layer.msg('提交成功!', {icon: 1, time: 1000, offset: 'rt'}, function () {
+                            // 关闭当前frame
+                            xadmin.close();
+                            // 可以对父窗口进行刷新
+                            xadmin.father_reload();
+                        });
+
+                        // layer.alert("设置成功", {icon: 6},function () {
+                        //
+                        //
+                        //     //关闭当前frame
+                        //     xadmin.close();
+                        //     // 可以对父窗口进行刷新
+                        //     xadmin.father_reload();
+                        // });
+                    }
+                }
+            });
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>
