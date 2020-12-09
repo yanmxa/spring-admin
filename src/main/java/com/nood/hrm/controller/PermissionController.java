@@ -27,6 +27,7 @@ public class PermissionController {
     @GetMapping("/build")
     @ResponseBody
     public Response<List<MenuDto>> buildMenu(String roleId) {
+
         List<MenuDto> menus = permissionService.buildMenu(roleId);
 
         return Response.success(ResponseCode.SUCCESS, menus);

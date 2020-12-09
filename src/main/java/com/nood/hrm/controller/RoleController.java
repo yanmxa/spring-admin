@@ -67,7 +67,7 @@ public class RoleController {
         return "role/role-edit";
     }
 
-    @PostMapping(value = "/edit")
+    @PostMapping(value = "/update")
     @ResponseBody
     public Response updateRole(@RequestBody RoleDto roleDto) {
         return roleService.update(roleDto);

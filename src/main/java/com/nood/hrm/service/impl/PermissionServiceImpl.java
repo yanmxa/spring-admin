@@ -96,6 +96,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<MenuDto> buildMenu(String roleId) {
+
+        if (roleId == null) return permissionMapper.buildAllMenu();
+
         Set<Integer> permissionIds = rolePermissionMapper.getPermissionByRoleId(roleId)
                 .stream()
                 .map(e -> e.getPermissionId())

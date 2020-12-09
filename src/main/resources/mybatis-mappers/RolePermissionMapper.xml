@@ -4,8 +4,7 @@
 
     <insert id="save">
         insert into sys_role_permission(roleId, permissionId) values
-        <foreach collection="permissionIds" item="permissionId"
-                 separator=",">
+        <foreach collection="permissionIds" item="permissionId" separator=",">
             (#{roleId}, #{permissionId})
         </foreach>
     </insert>

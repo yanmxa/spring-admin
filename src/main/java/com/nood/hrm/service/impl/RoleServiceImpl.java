@@ -56,7 +56,6 @@ public class RoleServiceImpl implements RoleService {
         // 1. 保存角色
         roleMapper.save(roleDto);
         List<Long> permissionIds = roleDto.getPermissionIds();
-        permissionIds.remove(0); // 移除0 PermissionId从1开始
 
         // 2. 保存角色对应的权限
         if (!CollectionUtils.isEmpty(permissionIds)) {
@@ -74,20 +73,18 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Response<Role> update(RoleDto roleDto) {
         List<Long> permissionIds = roleDto.getPermissionIds();
-        permissionIds.remove(0);
+//        permissionIds.remove(0);
 
-        // 1. 删除外表
-        // 删除原有的权限
+        // 1. 更新角色权限之前要删除该角色之前的所有权限
         rolePermissionMapper.deleteRolePermission(roleDto.getId());
-        // 添加新的权限
+        // 2. 添加新的权限
         if (!CollectionUtils.isEmpty(roleDto.getPermissionIds())) {
             rolePermissionMapper.save(roleDto.getId(), roleDto.getPermissionIds());
         }
 
-        // 2. 更新role表
+        // 3. 更新role表
         Integer roleId = roleMapper.update(roleDto);
-        System.out.println("roleId " + roleDto.getId() + " insert return " + roleId);
-        return Response.success();
+        return Response.judge(roleId);
     }
 
     @Override

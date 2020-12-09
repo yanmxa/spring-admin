@@ -5,63 +5,78 @@
     <meta charset="UTF-8">
     <title>新增角色信息</title>
     <header th:replace="header::html"></header>
-    <link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />
-    <link rel="stylesheet" th:href="@{/ztree/demo.css}" />
+    <link rel="stylesheet" th:href="@{/component/pear/css/pear.css}" />
+    <!--<link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/ztree/demo.css}" />-->
 </head>
 
 <body>
-<div class="x-body">
-    <form class="layui-form">
+<form class="layui-form" action="" style="padding: 2% 12% 0% 8%">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        <span style="color: red">*</span>角色名
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" id="roleNameId" th:value="${role.name}" name="name" required="" placeholder="请输入角色名" lay-verify="name" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色描述</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="descriptionId" th:value="${role.description}" name="description" required="" lay-verify="description" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
 
-        <div class="layui-form-item">
-            <label for="L_name" class="layui-form-label">
-                <span class="x-red">*</span>角色名
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="L_name" th:value="${role.name}" name="name" required="" lay-verify="name" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*</span>将会成为角色名
+                <div class="layui-form-item">
+                    <label class="layui-form-label">菜单分配</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" id="inputRoleId" th:value="${role.id}">
+                        <ul id="dataTree" class="dtree" data-id="0"></ul>
+                    </div>
+                </div>
+
             </div>
         </div>
-        <div class="layui-form-item">
-            <label for="L_description" class="layui-form-label">
-                <span class="x-red">*</span>描述
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="L_description" th:value="${role.description}" name="description" required="" lay-verify="description" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                该角色的定位或权限范围
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="col-md-2 control-label layui-form-label">权限</label>
-
-            <div class="col-md-10">
-                <ul id="treeDemo" class="ztree"></ul>
-                <!--<div id="layui-check-tree" class="demo-tree-more"></div>-->
-            </div>
-
-        </div>
-        <div class="layui-form-item">
-            <button  class="layui-btn" lay-filter="add" lay-submit="">
-                增加
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-sm" lay-submit="" lay-filter="role-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
             </button>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 <script>
-    layui.use(['form','layer', 'laydate'], function(){
-        $ = layui.jquery;
-        var form = layui.form
-            ,layer = layui.layer
-            ,laydate = layui.laydate;
+    layui.config({
+        base: '/'
+    }).extend({
+        dtree: 'component/layui_ext/dtree/dtree'
+    }).use(['dtree','form','jquery'],function(){
+        let form = layui.form;
+        let $ = layui.jquery;
+        let dtree = layui.dtree;
+        let Dtree = null;
+        let roleId = $("#inputRoleId").val();
 
-        //日期
-        laydate.render({
-            elem: '#L_birthday'
-            ,format: 'yyyy-MM-dd' //可任意组合
+        Dtree = dtree.render({
+            elem: "#dataTree",
+            initLevel: "1",
+            width: "100%",
+            method: 'get',
+            dataStyle: "layuiStyle",  //使用layui风格的数据格式
+            response:{message:"msg",statusCode:200},  //修改response中返回数据的定义
+            url: "/permission/build",
+            dataFormat: "list",  //配置data的风格为list
+            checkbar: true,  //开启复选框
+            checkbarType: "all"
         });
 
         //自定义验证规则
@@ -73,30 +88,35 @@
             }
         });
 
-        //监听提交
-        form.on('submit(add)', function(data){
-            console.log(data);
-            var permissionIds = getCheckedMenuIds();
-            data.field.permissionIds = permissionIds;
+        form.on('submit(role-save)', function(data){
+            // 获取复选框数组数据
+            var paramJsonArr = Dtree.getCheckbarJsonArrParam();
+            var ids = paramJsonArr["nodeId"]
+            var role = data.field
+            role['permissionIds'] = ids
+            role['id'] = roleId
             $.ajax({
-                url:"/role/add",
-                type:"POST",
-                contentType: "application/json; charset=utf-8",
-                data:JSON.stringify(data.field),
+                url:'/role/add',
+                data:JSON.stringify(role),
                 dataType:'json',
+                contentType:'application/json',
+                type:'post',
                 success:function(result){
-                    layer.alert("添加成功", {icon: 6},function () {
-                        //关闭当前frame
-                        xadmin.close();
-                        // 可以对父窗口进行刷新
-                        xadmin.father_reload();
-                    });
+                    if(result.code == 500 || result.code == 5000100 || result.code == 5000101 || result.code == 5000102){
+                        layer.msg(result.msg,{icon:2,time:1000});
+                    } else {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.location.reload();
+                        });
+                    }
                 }
-            });
+            })
             return false;
         });
+
     });
-    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+    // $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
 
 </script>
 </body>
