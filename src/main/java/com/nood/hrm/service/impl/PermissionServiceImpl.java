@@ -3,9 +3,11 @@ package com.nood.hrm.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.mapper.PermissionMapper;
 import com.nood.hrm.mapper.RolePermissionMapper;
 import com.nood.hrm.model.Permission;
+import com.nood.hrm.model.RolePermission;
 import com.nood.hrm.service.PermissionService;
 import com.nood.hrm.util.TreeUtil;
 import com.sun.org.apache.regexp.internal.RE;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -88,6 +91,21 @@ public class PermissionServiceImpl implements PermissionService {
         permissionMapper.deleteById(id);
         permissionMapper.deleteByParentId(id);
         return Response.success();
+    }
+
+
+    @Override
+    public List<MenuDto> buildMenu(String roleId) {
+        Set<Integer> permissionIds = rolePermissionMapper.getPermissionByRoleId(roleId)
+                .stream()
+                .map(e -> e.getPermissionId())
+                .collect(Collectors.toSet());
+        return permissionMapper.buildAllMenu()
+                .stream()
+                .map(e -> {
+                    if (permissionIds.contains(e.getId())) e.setCheckArr("1");
+                    return e;
+                }).collect(Collectors.toList());
     }
 
 }

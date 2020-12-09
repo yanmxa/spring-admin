@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nood.hrm.mapper.SalaryMapper">
+
+
+    <!-- 新增用户，用遍历Map的key和value的方式，可以实现只插入有效值 -->
+    <insert id="insertWithMap" parameterType="java.util.Map">
+        insert into salary (
+        <foreach collection="column2record" item="value" index="key" separator=",">
+            ${key}
+        </foreach>
+        )
+        values (
+        <foreach collection="column2record" item="value" index="key" separator=",">
+            #{value}
+        </foreach>
+        )
+    </insert>
+
+
+    <select id="getAllSalaryByPage" resultType="java.util.HashMap">
+      select
+        <foreach collection="columns" item="value" separator=",">
+            ${value}
+        </foreach>
+      from salary limit #{startPosition}, #{limit}
+    </select>
+
+</mapper>

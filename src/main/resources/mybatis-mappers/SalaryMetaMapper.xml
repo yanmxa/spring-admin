@@ -25,6 +25,9 @@
             <if test="isDecimal != null">
                 isDecimal = #{isDecimal},
             </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
             updateTime = #{updateTime}
         </set>
         where t.id = #{id}

@@ -13,13 +13,13 @@ public interface SalaryMetaMapper {
     @Select("select count(*) from salary_meta")
     Long countAll();
 
-    @Select("select * from salary_meta t order by t.id limit #{startPosition}, #{limit}")
+    @Select("select * from salary_meta t order by t.sort limit #{startPosition}, #{limit}")
     List<SalaryMeta> getAllMetaByPage(@Param("startPosition") Integer offset, @Param("limit") Integer limit);
 
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    @Insert("insert into salary_meta(name, type, property, detail, history, isDecimal, status, createTime, updateTime) " +
-            "values(#{name}, #{type}, #{property}, #{detail}, #{history}, #{isDecimal}, #{status}, now(), now())")
+    @Insert("insert into salary_meta(name, type, property, detail, history, sort, isDecimal, status, createTime, updateTime) " +
+            "values(#{name}, #{type}, #{property}, #{detail}, #{history}, #{sort}, #{isDecimal}, #{status}, now(), now())")
     int save(SalaryMeta salaryMeta);
 
     int updateSalaryMeta(SalaryMeta salaryMeta);
@@ -27,7 +27,7 @@ public interface SalaryMetaMapper {
     @Select("select * from salary_meta where id=#{id}")
     SalaryMeta getById(Integer id);
 
-    @Select("select * from salary_meta")
+    @Select("select * from salary_meta t order by t.sort")
     List<SalaryMeta> getAllMeta();
 
     @Delete("delete from salary_meta where id = #{id}")
@@ -36,8 +36,11 @@ public interface SalaryMetaMapper {
     @Select("select count(*) from salary_meta t where t.name like '%${name}%'")
     Long countMetaByFuzzyName(String name);
 
-    @Select("select * from salary_meta t where t.name like '%${name}%' order by t.id limit #{startPosition}, #{limit}")
+    @Select("select * from salary_meta t where t.name like '%${name}%' order by t.sort limit #{startPosition}, #{limit}")
     List<SalaryMeta> getMetaByFuzzyNameWithPage(@Param("name") String name,
                                                 @Param("startPosition") Integer offset,
                                                 @Param("limit") Integer limit);
+
+    @Select("select * from salary_meta where name=#{name}")
+    SalaryMeta getMetaByName(@Param("name") String name);
 }

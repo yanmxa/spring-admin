@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nood.hrm.mapper.DepartmentMapper">
+
+    <sql id="selectDeptVo">
+        select d.id,d.parentId,d.no, d.deptName,d.sort,d.status,d.createTime,d.updateTime
+        from sys_department d
+    </sql>
+
+    <select id="getFuzzyDept" resultType="com.nood.hrm.model.Department">
+        <include refid="selectDeptVo"/>
+        <where>
+            <if test="deptName != null and deptName != ''">
+                AND d.deptName like CONCAT('%', #{deptName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND d.status = #{status}
+            </if>
+            <!-- 数据范围过滤 -->
+            <!-- ${params.dataScope} -->
+        </where>
+        order by d.sort
+    </select>
+
+
+    <select id="buildAll" resultType="com.nood.hrm.dto.DepartmentDto">
+        select d.id as id, d.parentId, d.deptName as title
+            from sys_department d
+        <!-- <where> -->
+            <!-- 数据范围过滤 -->
+        <!-- ${params.dataScope} -->
+        <!-- </where> -->
+    </select>
+
+
+    <select id="selectDeptById" parameterType="integer" resultType="com.nood.hrm.model.Department">
+		select d.id, d.parentId, d.no, d.ancestors, d.deptName, d.status,
+			(select s.deptName from sys_department s where s.id = d.parentId) parentName
+		from sys_department d
+		where d.id = #{id}
+	</select>
+
+    <select id="checkDeptNameUnique" resultType="com.nood.hrm.model.Department">
+        <include refid="selectDeptVo"/>
+        where deptName= #{deptName} and parentId = #{parentId} limit 1
+    </select>
+
+    <select id="selectChildrenDeptById" parameterType="integer" resultType="com.nood.hrm.model.Department">
+		select * from sys_department where find_in_set(#{id}, ancestors)
+	</select>
+
+    <select id="selectRoleDeptTree" parameterType="integer" resultType="com.nood.hrm.model.Department">
+		select d.id as id, d.parentId, d.no, d.deptName as title
+		from sys_department d
+			left join sys_role_department rd on d.id = rd.departmentId
+		where rd.roleId = #{id}
+		order by d.parentId
+	</select>
+
+    <update id="updateDeptChildren" parameterType="java.util.List">
+        update sys_department set ancestors =
+        <foreach collection="depts" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.ancestors}
+        </foreach>
+        where id in
+        <foreach collection="depts" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="updateDept">
+        update sys_department d
+        <set>
+            <if test="parentId != null and parentId != 0">parentId = #{parentId},</if>
+            <if test="no != null and no != 0">no = #{no},</if>
+            <if test="deptName != null and deptName != ''">`deptName`= #{deptName},</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            updateTime = #{updateTime}
+        </set>
+        where d.id = #{id}
+    </update>
+
+    <update id="updateDeptStatus" parameterType="com.nood.hrm.model.Department">
+        update sys_department
+        <set>
+            <if test="status != null and status != ''">status = #{status},</if>
+            updateTime = #{updateTime}
+        </set>
+        where id in (${ancestors})
+    </update>
+
+    <select id="selectNormalChildrenDeptById" parameterType="integer" resultType="int">
+		select count(*) from sys_department where status = 1 and find_in_set(#{id}, ancestors)
+	</select>
+
+    <select id="selectDeptCount" parameterType="com.nood.hrm.model.Department" resultType="int">
+        select count(1) from sys_department
+        <where>
+            <if test="id != null and id != 0"> and id = #{id} </if>
+            <if test="parentId != null and parentId != 0"> and parentId = #{parentId} </if>
+        </where>
+    </select>
+
+    <select id="checkDeptExistUser" parameterType="integer" resultType="int">
+		select count(1) from sys_user where departmentId = #{deptId}
+	</select>
+
+    <delete id="deleteDeptById" parameterType="integer">
+		delete from sys_department where id =#{id}
+	</delete>
+</mapper>

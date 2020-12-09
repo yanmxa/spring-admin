@@ -1,6 +1,7 @@
 package com.nood.hrm.mapper;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.model.User;
 import oracle.jrockit.jfr.events.Bits;
 import org.apache.ibatis.annotations.*;
@@ -23,8 +24,8 @@ public interface UserMapper {
 
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    @Insert("insert into sys_user(username, password, nickname, headImgUrl, phone, telephone, email, birthday, sex, status, createTime, updateTime) " +
-            "values(#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{telephone}, #{email}, #{birthday}, #{sex}, #{status}, now(), now())")
+    @Insert("insert into sys_user(no, departmentId, username, password, nickname, headImgUrl, phone, telephone, email, birthday, sex, status, createTime, updateTime) " +
+            "values(#{no}, #{departmentId}, #{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{telephone}, #{email}, #{birthday}, #{sex}, #{status}, now(), now())")
     int save(User user);
 
     @Select("select * from sys_user t where t.telephone = #{phone}")
@@ -48,4 +49,27 @@ public interface UserMapper {
 
     @Update("update sys_user t set t.password = #{password} where t.id = #{id}")
     int changePassword(@Param("id") Long id, @Param("password") String password);
+
+
+
+    @Select("select u.id, d.deptName, u.telephone, u.username, u.no, u.sex, u.status, r.name from sys_user u " +
+            "left join sys_role_user ru on u.id = ru.userId " +
+            "left join sys_department d on u.departmentId = d.id " +
+            "inner join sys_role r on ru.roleId = r.id " +
+            "order by u.id limit #{startPosition}, #{limit}")
+    @Results(id="userDtoMap", value = {
+            @Result(property = "id", column = "id", id=true),
+            @Result(property = "departmentId", column = "departmentId"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "no", column = "no"),
+            @Result(property = "sex", column = "sex"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "departmentName", column = "deptName"),
+            @Result(property = "roleName", column = "name")
+    })
+    List<UserDto> getAllUserDtoByPage(@Param("startPosition") Integer startPosition, @Param("limit") Integer limit);
+
+    @Select("select * from sys_user t where t.no = #{no}")
+    User getUserByNo(Integer no);
 }

@@ -8,7 +8,7 @@ public interface UserService {
 
     User getUser(String username);
 
-    Response<User> getAllUserByPage(Integer offset, Integer limit);
+    Response<UserDto> getAllUserByPage(Integer offset, Integer limit);
 
     Response<User> save(User user, Integer roleId);
 
@@ -23,4 +23,6 @@ public interface UserService {
     Response<User> getUserByFuzzyUsername(String username, Integer offset, Integer limit);
 
     Response<User> changePassword(String username, String oldPassword, String newPassword);
+
+    User getUserByNo(Integer no);
 }

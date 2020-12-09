@@ -2,6 +2,8 @@ package com.nood.hrm.controller;
 
 import com.nood.hrm.base.request.TableRequest;
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.dto.RoleDto;
 import com.nood.hrm.model.Role;
 import com.nood.hrm.service.RoleService;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("role")
@@ -26,6 +30,7 @@ public class RoleController {
         log.info("RoleController.getAll()");
         return roleService.getAllRole();
     }
+
 
     @GetMapping("/list")
     @ResponseBody

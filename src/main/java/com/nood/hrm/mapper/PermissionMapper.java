@@ -1,6 +1,7 @@
 package com.nood.hrm.mapper;
 
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.model.Permission;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,9 @@ public interface PermissionMapper {
 
     @Delete("delete from sys_permission where parentId = #{parentId}")
     int deleteByParentId(@Param("parentId") Integer id);
+
+    @Select("select m.id, m.parentId, m.name as title from sys_permission m")
+//    @Result(property = "title",column = "menu_name")
+//    @Result(property = "id",column = "menu_id")
+    List<MenuDto> buildAllMenu();
 }

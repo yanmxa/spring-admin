@@ -92,4 +92,8 @@ public class Response<T> implements Serializable {
         return new Response();
     }
 
+    public static <T> Response<T> judge(int greaterZero) {
+        if (greaterZero > 0) return Response.success();
+        else return Response.failure();
+    }
 }

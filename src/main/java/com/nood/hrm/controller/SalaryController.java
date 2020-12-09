@@ -3,6 +3,7 @@ package com.nood.hrm.controller;
 import com.nood.hrm.base.request.TableRequest;
 import com.nood.hrm.base.response.Response;
 import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.dto.SalaryItemDto;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.model.SalaryMeta;
 import com.nood.hrm.model.User;
@@ -18,9 +19,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -114,10 +117,29 @@ public class SalaryController {
 
     @GetMapping("/findSalaryMetaByFuzzyName")
     @ResponseBody
-    public Response<SalaryMeta> findUserByFuzzyUsername(TableRequest tableRequest, String name) {
+    public Response<SalaryMeta> findMetaByFuzzyName(TableRequest tableRequest, String name) {
         tableRequest.countOffset();
         return salaryService.getMetaByFuzzyName(name, tableRequest.getOffset(), tableRequest.getLimit());
+    }
 
+
+    @RequestMapping(value = "/upload", method={RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public Response uploadExcel(@RequestParam("file") MultipartFile file) {
+        return salaryService.updateSalary(file);
+    }
+
+    @RequestMapping(value = "/tableHead", method = RequestMethod.GET)
+    @ResponseBody
+    public List<SalaryItemDto> getSalaryTableHead() {
+        return salaryService.getSalaryTableHead();
+    }
+
+    @GetMapping(value = "/salaryTable")
+    @ResponseBody
+    public Response getSalaryTable(TableRequest tableRequest) {
+        tableRequest.countOffset();
+        return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit());
     }
 
 }

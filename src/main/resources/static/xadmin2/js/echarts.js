@@ -52909,7 +52909,7 @@ function forceLayout$1(nodes, edges, opts) {
                 var n2 = e.n2;
 
                 sub(v12, n2.p, n1.p);
-                var d = len(v12) - e.d;
+                var d = len(v12) - e.date;
                 var w = n2.w / (n1.w + n2.w);
 
                 if (isNaN(w)) {
@@ -75688,7 +75688,7 @@ Calendar.prototype = {
 
         var nthDay = (nthWeek - 1) * 7 - rangeInfo.fweek + day;
         var date = new Date(rangeInfo.start.time);
-        date.setDate(rangeInfo.start.d + nthDay);
+        date.setDate(rangeInfo.start.date + nthDay);
 
         return this.getDateInfo(date);
     }

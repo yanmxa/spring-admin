@@ -3,6 +3,8 @@ package com.nood.hrm.controller;
 import com.alibaba.fastjson.JSONArray;
 
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.dto.RoleDto;
 import com.nood.hrm.model.Permission;
 import com.nood.hrm.service.PermissionService;
@@ -12,12 +14,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("permission")
 @Slf4j
 public class PermissionController {
     @Autowired
     private PermissionService permissionService;
+
+
+    @GetMapping("/build")
+    @ResponseBody
+    public Response<List<MenuDto>> buildMenu(String roleId) {
+        List<MenuDto> menus = permissionService.buildMenu(roleId);
+
+        return Response.success(ResponseCode.SUCCESS, menus);
+    }
 
 
     @RequestMapping(value = "/listAllPermission", method = RequestMethod.GET)

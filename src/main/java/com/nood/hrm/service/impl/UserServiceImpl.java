@@ -1,7 +1,9 @@
 package com.nood.hrm.service.impl;
 
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.base.response.ResponseCode;
 import com.nood.hrm.dto.UserDto;
+import com.nood.hrm.mapper.RoleMapper;
 import com.nood.hrm.mapper.RoleUserMapper;
 import com.nood.hrm.mapper.UserMapper;
 import com.nood.hrm.model.RoleUser;
@@ -14,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -25,33 +31,54 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleUserMapper roleUserMapper;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
     @Override
     public User getUser(String username) {
         return userMapper.getUserByName(username);
     }
 
     @Override
-    public Response<User> getAllUserByPage(Integer offset, Integer limit) {
-        return Response.success(
-                userMapper.countAllUsers().intValue(),
-                userMapper.getAllUserByPage(offset, limit));
+    public Response<UserDto> getAllUserByPage(Integer offset, Integer limit) {
+//        List<UserDto> userDtos = userMapper.getAllUserByPage(offset, limit)
+//                .stream()
+//                .map(user -> {
+//                    RoleUser roleUser = roleUserMapper.getRoleUserByUserId(user.getId().intValue());
+//                    String roleName = roleMapper.getById(roleUser.getRoleId()).getName();
+//                    UserDto userDto = (UserDto) user;
+//                    userDto.setRoleName(roleName);
+//                    return userDto;
+//                })
+//                .collect(Collectors.toList());
+
+
+        List<UserDto> userDtos = userMapper.getAllUserDtoByPage(offset, limit);
+        return Response.success(userMapper.countAllUsers().intValue(), userDtos);
     }
 
     @Override
     public Response<User> save(User user, Integer roleId) {
+
+        User origionUser = getUserByNo(user.getNo());
+        if (origionUser != null) return Response.failure("用户编号" + user.getNo() + "已经存在！");
+
+//        User user = userService.getUserByPhone(userDto.getTelephone());
+//        if (user != null && !user.getId().equals(userDto.getId())) {
+//            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
+//        }
+        user.setStatus(1);
+        user.setPassword(new BCryptPasswordEncoder().encode(User.defaultPassword));
+
         if (roleId != null) {
-
-            userMapper.save(user);
-
             RoleUser roleUser = new RoleUser();
             roleUser.setRoleId(roleId);
             roleUser.setUserId(user.getId().intValue());
             roleUserMapper.save(roleUser);
-
-            return Response.success();
         }
+        userMapper.save(user);
 
-        return Response.failure();
+        return Response.success("保存成功，默认密码为：" + User.defaultPassword);
     }
 
     @Override
@@ -67,6 +94,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response<User> updateUser(UserDto userDto, Integer roleId) {
+
+//        User user = null;
+//        user = userService.getUserByPhone(userDto.getTelephone());
+//        if (user != null && !user.getId().equals(userDto.getId())) {
+//            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
+//        }
 
         if (roleId == null) {
             return Response.failure("roleId can not be empty!");
@@ -116,5 +149,10 @@ public class UserServiceImpl implements UserService {
         userMapper.changePassword(user.getId(), new BCryptPasswordEncoder().encode(newPassword));
         return Response.success();
 
+    }
+
+    @Override
+    public User getUserByNo(Integer no) {
+        return userMapper.getUserByNo(no);
     }
 }

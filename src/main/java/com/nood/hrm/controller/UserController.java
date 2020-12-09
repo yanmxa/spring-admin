@@ -4,11 +4,14 @@ import com.nood.hrm.base.request.TableRequest;
 import com.nood.hrm.base.response.Response;
 import com.nood.hrm.base.response.ResponseCode;
 import com.nood.hrm.dto.UserDto;
+import com.nood.hrm.model.Department;
 import com.nood.hrm.model.User;
+import com.nood.hrm.service.DepartmentService;
 import com.nood.hrm.service.UserService;
 import com.nood.hrm.util.MD5;
 import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +36,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private DepartmentService departmentService;
+
     @GetMapping("/{username}")
     @ResponseBody
     public User user(@PathVariable String username) {
@@ -43,7 +49,7 @@ public class UserController {
     @GetMapping("/list")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:query')")
-    public Response<User> getUsers(TableRequest tableRequest) {
+    public Response<UserDto> getUsers(TableRequest tableRequest) {
 
         tableRequest.countOffset();
 
@@ -53,7 +59,7 @@ public class UserController {
     @GetMapping(value = "/add")
     @PreAuthorize("hasAuthority('sys:user:add')")
     public String addUser(Model model) {
-        model.addAttribute("user",new User());
+        model.addAttribute("user",new UserDto());
         return "user/user-add";
     }
 
@@ -61,13 +67,8 @@ public class UserController {
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:add')")
     public Response<User> saveUser(UserDto userDto, Integer roleId) {
-        User user = userService.getUserByPhone(userDto.getTelephone());
-        if (user != null && !user.getId().equals(userDto.getId())) {
-            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
-        }
 
-        userDto.setStatus(1);
-        userDto.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
+
         return userService.save(userDto, roleId);
     }
 
@@ -79,18 +80,21 @@ public class UserController {
 
     @GetMapping(value = "/edit")
     public String editUser(Model model, User user) {
-        model.addAttribute(userService.getUserById(user.getId()));
+        UserDto userDto = new UserDto();
+        User originUser = userService.getUserById(user.getId());
+        BeanUtils.copyProperties(originUser, userDto);
+        if (originUser.getDepartmentId() != null) {
+            Department dept = departmentService.getDeptById(originUser.getDepartmentId());
+            userDto.setDepartmentName(dept.getDeptName());
+        }
+        model.addAttribute("user", userDto);
         return "user/user-edit";
     }
 
     @PostMapping(value = "/edit")
     @ResponseBody
     public Response<User> updateUser(UserDto userDto, Integer roleId) {
-        User user = null;
-        user = userService.getUserByPhone(userDto.getTelephone());
-        if (user != null && !user.getId().equals(userDto.getId())) {
-            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
-        }
+
         return userService.updateUser(userDto, roleId);
     }
 

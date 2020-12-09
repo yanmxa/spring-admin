@@ -13,5 +13,6 @@ public class SalaryMeta extends BaseEntity<Integer> {
     private String history;
     private Integer isDecimal;
     private Integer status;
+    private Integer sort;
 
 }

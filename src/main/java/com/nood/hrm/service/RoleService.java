@@ -1,8 +1,11 @@
 package com.nood.hrm.service;
 
 import com.nood.hrm.base.response.Response;
+import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.dto.RoleDto;
 import com.nood.hrm.model.Role;
+
+import java.util.List;
 
 public interface RoleService {
 
@@ -19,4 +22,5 @@ public interface RoleService {
     Response<Role> update(RoleDto roleDto);
 
     Response<Role> delete(Integer id);
+
 }

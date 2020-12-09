@@ -33,7 +33,7 @@
                         </form>
 
                         <div class="layui-inline layui-btn-group" style="float: right">
-                            <button class="layui-btn" onclick="xadmin.open('添加用户','/user/add')" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
+                            <button class="layui-btn" onclick="xadmin.open('添加用户','/user/add', 1000, 600)" permission="sys:user:add"><i class="layui-icon"></i>添加</button>
                             <button class="layui-btn " id="deleteCheckedId" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
                         </div>
                 </div>
@@ -81,13 +81,18 @@
             ,cols: [
                 [ //表头
                     {type: 'checkbox', fixed: 'left'}
-                    ,{field: 'id', title: 'ID', align:'center', width:50}
-                    ,{field: 'username', title: '用户名'}
-                    ,{field: 'telephone', title: '手机'}
-                    ,{field: 'status', title: '状态',  templet:function(d){
+                    ,{field: 'departmentName', title: '部门', align:'center'}
+                    ,{field: 'no', title: '编号', align:'center'}
+                    ,{field: 'username', title: '姓名', align:'center'}
+                    ,{field: 'sex', title: '性别', align:'center',  templet:function(d){
+                        return  d.sex == '1' ? "男":"女";
+                    }}
+                    ,{field: 'roleName', align:'center', title: '角色'}
+                    ,{field: 'telephone', align:'center', title: '手机'}
+                    ,{field: 'status', align:'center', title: '状态',  templet:function(d){
                         return  d.status == '1' ? "启动":"禁用";
                     }}
-                    ,{field: 'birthday', title: '生日'}
+                    // ,{field: 'birthday', title: '生日'}
                     ,{title:'操作', toolbar: '#barDemo',align:'center'}
                 ]
             ],
@@ -120,7 +125,7 @@
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){
-                xadmin.open('编辑用户信息','/user/edit/?id='+data.id);
+                xadmin.open('编辑用户信息','/user/edit/?id='+data.id , 1000, 600);
             }
         });
 
@@ -143,14 +148,19 @@
                 ,cols: [
                     [ //表头
                         {type: 'checkbox', fixed: 'left'}
-                        ,{field: 'id', title: 'ID', align:'center', width:50}
-                        ,{field: 'username', title: '用户名'}
-                        ,{field: 'telephone', title: '手机'}
-                        ,{field: 'status', title: '状态',  templet:function(d){
+                        ,{field: 'departmentName', title: '部门', align:'center'}
+                        ,{field: 'no', title: '编号', align:'center'}
+                        ,{field: 'username', title: '姓名', align:'center'}
+                        ,{field: 'sex', title: '性别', align:'center',  templet:function(d){
+                            return  d.sex == '1' ? "男":"女";
+                        }}
+                        ,{field: 'roleName', align:'center', title: '角色'}
+                        ,{field: 'telephone', align:'center', title: '手机'}
+                        ,{field: 'status', align:'center', title: '状态',  templet:function(d){
                             return  d.status == '1' ? "启动":"禁用";
                         }}
-                        ,{field: 'birthday', title: '生日'}
-                        ,{title:'操作', toolbar: '#barDemo' }
+                        // ,{field: 'birthday', title: '生日'}
+                        ,{title:'操作', toolbar: '#barDemo',align:'center'}
                     ]
                 ]
             });

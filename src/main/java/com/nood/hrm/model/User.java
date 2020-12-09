@@ -10,7 +10,10 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity<Long> {
 
-    private static final long serialVersionUID = -6525908145032868837L;
+    public static final String defaultPassword = "123456";
+
+    private Integer no;
+    private Integer departmentId;
     private String username;
     private String password;
     private String nickname;

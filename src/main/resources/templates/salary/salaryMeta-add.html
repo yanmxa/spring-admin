@@ -68,6 +68,16 @@
         </div>
 
         <div class="layui-form-item">
+            <label for="hello" class="layui-form-label">
+                <span class="x-red"></span>排序
+            </label>
+            <div class="layui-input-inline" style="width: 66%">
+                <input type="text" id="hello" th:value="${salaryMeta.sort}" name="sort" required="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
             <label for="is" class="layui-form-label">
                 <span class="x-red"></span>是否数值
             </label>
@@ -103,10 +113,11 @@
 </div>
 <script>
 
-    layui.use(['form','layer', 'laydate'], function(){
+    layui.use(['form','layer', 'laydate', 'table'], function(){
         $ = layui.jquery;
         var form = layui.form
             ,layer = layui.layer
+            ,table = layui.table
             ,laydate = layui.laydate;
 
 
@@ -157,6 +168,7 @@
                             // 关闭当前frame
                             xadmin.close();
                             // 可以对父窗口进行刷新
+                            // table.reload('table');
                             xadmin.father_reload();
                         });
 

@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <title>更新角色信息</title>
     <header th:replace="header::html"></header>
-    <link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />
-    <link rel="stylesheet" th:href="@{/ztree/demo.css}" />
+    <link rel="stylesheet" th:href="@{/component/pear/css/pear.css}" />
+
+    <!--<link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/ztree/demo.css}" />-->
 </head>
 
 <body>
 <div class="x-body">
     <form class="layui-form">
 
-        <input type="hidden" name="id" id="roleId" th:value="${role.id}">
+        <!--<input type="hidden" name="id" id="roleId" th:value="${role.id}">-->
 
         <div class="layui-form-item">
             <label for="L_name" class="layui-form-label">
@@ -37,14 +39,23 @@
                 该角色的定位或权限范围
             </div>
         </div>
+
         <div class="layui-form-item">
-            <label class="col-md-2 control-label layui-form-label">权限</label>
-
-            <div class="col-md-10">
-                <ul id="treeDemo" class="ztree"></ul>
+            <label class="layui-form-label">菜单分配</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="roleId" th:value="${role.id}">
+                <ul id="dataTree" class="dtree" data-id="0"></ul>
             </div>
-
         </div>
+
+        <!--<div class="layui-form-item">-->
+            <!--<label class="col-md-2 control-label layui-form-label">权限</label>-->
+
+            <!--<div class="col-md-10">-->
+                <!--<ul id="treeDemo" class="ztree"></ul>-->
+            <!--</div>-->
+        <!--</div>-->
+
         <div class="layui-form-item">
             <button  class="layui-btn" lay-filter="update" lay-submit="">
                 更新
@@ -53,53 +64,112 @@
     </form>
 </div>
 <script>
-    layui.use(['form','layer', 'laydate'], function(){
-        $ = layui.jquery;
-        var form = layui.form
-            ,layer = layui.layer
-            ,laydate = layui.laydate;
 
-        //日期
-        laydate.render({
-            elem: '#L_birthday'
-            ,format: 'yyyy-MM-dd' //可任意组合
+    layui.config({
+        base: '/'
+    }).extend({
+        dtree: 'component/layui_ext/dtree/dtree'
+    }).use(['dtree','form','jquery'],function(){
+        let form = layui.form;
+        let $ = layui.jquery;
+        let dtree = layui.dtree;
+        let Dtree = null;
+        let roleId = $("#roleId").val();
+        Dtree = dtree.render({
+            elem: "#dataTree",
+            initLevel: "1",
+            width: "100%",
+            method: 'get',
+            dataStyle: "layuiStyle",  //使用layui风格的数据格式
+            response:{message:"msg",statusCode:200},  //修改response中返回数据的定义
+            url: "/permission/build?roleId=" + roleId,
+            dataFormat: "list",  //配置data的风格为list
+            checkbar: true,  //开启复选框
+            checkbarType: "all"
         });
 
-        //自定义验证规则
         form.verify({
             name: function(value){
-                if(value.length < 4){
-                    return '角色名至少4个字符';
+                if(value.length < 2){
+                    return '角色名至少2个字符';
                 }
             }
         });
-
-        //监听提交
-        form.on('submit(update)', function(data){
-            console.log(data);
-            var permissionIds = getCheckedMenuIds();
-            data.field.permissionIds = permissionIds;
+        form.on('submit(role-save)', function(data){
+            // 获取复选框数组数据
+            var paramJsonArr = Dtree.getCheckbarJsonArrParam();
+            var ids = paramJsonArr["nodeId"]
+            var datas = data.field
+            datas['menuIds'] = ids
+            datas['roleId'] = roleId
             $.ajax({
-                url:"/role/edit",
-                type:"POST",
-                contentType: "application/json; charset=utf-8",
-                data:JSON.stringify(data.field),
+                url:'/api/role',
+                data:JSON.stringify(datas),
                 dataType:'json',
+                contentType:'application/json',
+                type:'post',
                 success:function(result){
-                    layer.alert("添加成功", {icon: 6},function () {
-                        //关闭当前frame
-                        xadmin.close();
-                        // 可以对父窗口进行刷新
-                        xadmin.father_reload();
-                    });
+                    if(result.success){
+                        layer.msg(result.msg,{icon:1,time:1000},function(){
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.location.reload();
+                        });
+                    }else{
+                        layer.msg(result.msg,{icon:2,time:1000});
+                    }
                 }
-            });
+            })
             return false;
         });
-    });
-    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+    })
 
-    initMenuDatas($("#roleId").val())
+    // layui.use(['form','layer', 'laydate'], function(){
+    //     $ = layui.jquery;
+    //     var form = layui.form
+    //         ,layer = layui.layer
+    //         ,laydate = layui.laydate;
+    //
+    //     //日期
+    //     laydate.render({
+    //         elem: '#L_birthday'
+    //         ,format: 'yyyy-MM-dd' //可任意组合
+    //     });
+    //
+    //     //自定义验证规则
+    //     form.verify({
+    //         name: function(value){
+    //             if(value.length < 4){
+    //                 return '角色名至少4个字符';
+    //             }
+    //         }
+    //     });
+    //
+    //     //监听提交
+    //     form.on('submit(update)', function(data){
+    //         console.log(data);
+    //         var permissionIds = getCheckedMenuIds();
+    //         data.field.permissionIds = permissionIds;
+    //         $.ajax({
+    //             url:"/role/edit",
+    //             type:"POST",
+    //             contentType: "application/json; charset=utf-8",
+    //             data:JSON.stringify(data.field),
+    //             dataType:'json',
+    //             success:function(result){
+    //                 layer.alert("添加成功", {icon: 6},function () {
+    //                     //关闭当前frame
+    //                     xadmin.close();
+    //                     // 可以对父窗口进行刷新
+    //                     xadmin.father_reload();
+    //                 });
+    //             }
+    //         });
+    //         return false;
+    //     });
+    // });
+    // $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+    //
+    // initMenuDatas($("#roleId").val())
 
 </script>
 </body>

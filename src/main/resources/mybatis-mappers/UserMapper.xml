@@ -5,6 +5,14 @@
     <update id="updateUser">
         update sys_user t
         <set>
+            <if test="no != null">
+                no = #{no},
+            </if>
+
+            <if test="departmentId != null">
+                departmentId = #{departmentId},
+            </if>
+
             <if test="username != null">
                 username = #{username},
             </if>

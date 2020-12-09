@@ -3,7 +3,10 @@ package com.nood.hrm.mapper;
 import org.apache.ibatis.annotations.*;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
+import sun.jvm.hotspot.runtime.PerfDataEntry;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Repository
@@ -27,4 +30,16 @@ public interface SalaryMapper {
 
     @Update("alter table salary change ${oldName} ${newName} varchar(255) comment #{commit}")
     void update2VarcharColumn(@Param("oldName") String oldName, @Param("newName") String newName, @Param("commit") String commit);
+
+    void insertWithMap(@Param("column2record") Map<String,Object> column2record);
+
+    @Select("select count(*) from salary")
+    Long countAll();
+
+
+//    List<Map<String, Object>> getAllSalaryByPage(Integer offset, Integer limit);
+
+    List<Map<String,Object>> getAllSalaryByPage(@Param("startPosition") Integer offset,
+                                                @Param("limit") Integer limit,
+                                                @Param("columns") List<String> columns);
 }
