@@ -7,10 +7,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Role extends BaseEntity<Integer> {
 
-    private static final long SerialVersionUID = -6525908145032868837L;
-
     private String name;
     private String description;
+
+    /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限） */
+    private String dataScope;
 
     @Override
     public String toString() {

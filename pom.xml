@@ -85,6 +85,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--aop-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		 <!--&lt;!&ndash;create excel&ndash;&gt;-->
 		<!--<dependency>-->
 			<!--<groupId>org.apache.poi</groupId>-->

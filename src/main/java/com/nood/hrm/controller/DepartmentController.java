@@ -130,19 +130,18 @@ public class DepartmentController {
         return Response.judge(i);
     }
 
-//    /**
-//     * 加载角色部门（数据权限）列表树
-//     */
-//    @GetMapping("/ebuild/{roleId}")
-//    @ResponseBody
+    /**
+     * 加载角色部门（数据权限）列表树
+     */
+    @GetMapping("/build/{roleId}")
+    @ResponseBody
 //    @ApiOperation(value = "通过id绘制部门树")
 //    @PreAuthorize("hasAnyAuthority('role:add','role:edit')")
 //    @MyLog("通过id绘制部门树")
-//    public Result deptTreeData(@PathVariable Integer roleId)
-//    {
-//        List<DeptDto> deptDtos = deptService.roleDeptTreeData(roleId);
-//        return Result.ok().data(deptDtos);
-//    }
+    public Response deptTreeData(@PathVariable Integer roleId) {
+        List<DepartmentDto> departmentDtos = departmentService.roleDeptTreeData(roleId);
+        return Response.success(ResponseCode.SUCCESS, departmentDtos);
+    }
 
 
 }

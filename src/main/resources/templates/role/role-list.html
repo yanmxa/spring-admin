@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Friday-System</title>
     <header th:replace="header::html"></header>
+    <!--<link rel="stylesheet" th:href="@{/component/pear/css/pear.css}" />-->
+
 </head>
 <body>
 <div class="x-nav">
@@ -60,6 +62,8 @@
                     <script type="text/html" id="barDemo">
                         <div class="layui-btn-group">
                             <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="edit" permission="sys:user:edit"><i class="layui-icon"></i></a>
+
+                            <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="power" permission="sys:user:del"><i class="layui-icon">&#xe672;</i></a>
                             <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="del" permission="sys:user:del"><i class="layui-icon"></i></a>
                         </div>
                     </script>
@@ -120,8 +124,10 @@ layui.use(['table', 'form'], function(){
                     });
 
                 });
-            } else if(obj.event === 'edit'){
+            } else if(obj.event === 'edit') {
                 xadmin.open('编辑角色信息','/role/edit/?id=' + data.id);
+            } else if(obj.event == 'power') {
+                window.power(obj);
             }
         });
 
@@ -153,6 +159,17 @@ layui.use(['table', 'form'], function(){
             });
             return false;
         });
+
+        window.power = function(obj){
+            var data = obj.data;
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['600px', '600px'],
+                content: '/role/dataScope/?id='+data.id
+            });
+        }
     });
 </script>
 

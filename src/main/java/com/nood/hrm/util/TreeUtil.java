@@ -52,7 +52,7 @@ public class TreeUtil {
                 int i = collect1.indexOf(item);
                 deptDto = lists.get(i);
                 deptDto.setCheckArr("1");
-                lists.set(i,deptDto);
+                lists.set(i, deptDto);
             }
         }
         return lists;

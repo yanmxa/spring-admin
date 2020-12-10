@@ -4,6 +4,7 @@ import com.nood.hrm.base.response.Response;
 import com.nood.hrm.base.response.ResponseCode;
 import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.dto.RoleDto;
+import com.nood.hrm.mapper.RoleDepartmentMapper;
 import com.nood.hrm.mapper.RoleMapper;
 import com.nood.hrm.mapper.RolePermissionMapper;
 import com.nood.hrm.mapper.RoleUserMapper;
@@ -11,6 +12,7 @@ import com.nood.hrm.model.Role;
 import com.nood.hrm.model.RolePermission;
 import com.nood.hrm.model.RoleUser;
 import com.nood.hrm.service.RoleService;
+import com.nood.hrm.util.UserConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleUserMapper roleUserMapper;
+
+    @Autowired
+    private RoleDepartmentMapper roleDepartmentMapper;
 
     @Override
     public Response<Role> getAllRole() {
@@ -100,6 +105,23 @@ public class RoleServiceImpl implements RoleService {
         // 2. 删除role数据
         return Response.failure(ResponseCode.USERNAME_REPEAT.USER_ROLE_NO_CLEAR.getCode(),ResponseCode.USERNAME_REPEAT.USER_ROLE_NO_CLEAR.getMessage());
 
+    }
+
+    @Override
+    public Response authDataScope(RoleDto roleDto) {
+        if (roleDto.getDataScope().equals(UserConstants.DATA_SCOPE_CUSTOM)){
+            List<Integer> departmentIds = roleDto.getDepartmentIds();
+//            departmentIds.remove(0L);
+            roleDepartmentMapper.deleteRoleDeptByRoleId(roleDto.getId());
+            if (!CollectionUtils.isEmpty(departmentIds)) {
+                roleDepartmentMapper.save(roleDto.getId(), departmentIds);
+            }
+            roleMapper.update(roleDto);
+        }else {
+            roleMapper.update(roleDto);
+            roleDepartmentMapper.deleteRoleDeptByRoleId(roleDto.getId());
+        }
+        return Response.success("更新成功");
     }
 
 }

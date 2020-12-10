@@ -82,5 +82,18 @@ public class RoleController {
         return roleService.delete(roleDto.getId());
     }
 
+    @GetMapping(value = "/dataScope")
+    public String dataScope(Model model, RoleDto roleDto) {
+        model.addAttribute("role", roleService.getRoleById(roleDto.getId()));
+        return "role/role-dataScope";
+    }
+
+    @PutMapping(value = "/authDataScope")
+    @ResponseBody
+//    @ApiOperation(value = "修改角色数据权限")
+    public Response uthDataScope(@RequestBody RoleDto roleDto) {
+
+        return roleService.authDataScope(roleDto);
+    }
 
 }

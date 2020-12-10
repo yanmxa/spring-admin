@@ -23,4 +23,5 @@ public interface RoleService {
 
     Response<Role> delete(Integer id);
 
+    Response authDataScope(RoleDto roleDto);
 }

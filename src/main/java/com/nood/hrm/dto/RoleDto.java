@@ -10,4 +10,5 @@ public class RoleDto extends Role {
 
     private List<Long> permissionIds;
 
+    private List<Integer> departmentIds;
 }

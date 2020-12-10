@@ -33,9 +33,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
 //    @DataPermission(deptAlias = "d")
     public List<DepartmentDto> roleDeptTreeData(Integer roleId) {
+
         List<DepartmentDto> selectRoleDeptTree = departmentMapper.selectRoleDeptTree(roleId);
-        DepartmentDto deptDto = new DepartmentDto();
-        List<DepartmentDto> buildAll = departmentMapper.buildAll(deptDto);
+        List<DepartmentDto> buildAll = departmentMapper.buildAll(new DepartmentDto());
+
         List<DepartmentDto> tree = TreeUtil.deptTree(selectRoleDeptTree, buildAll);
         return tree;
     }

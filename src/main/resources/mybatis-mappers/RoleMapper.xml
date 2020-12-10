@@ -14,6 +14,9 @@
             <if test="name != null">
                 `name` = #{name},
             </if>
+            <if test="dataScope != null">
+                dataScope = #{dataScope},
+            </if>
             <if test="description != null">
                 description = #{description},
             </if>

@@ -28,10 +28,10 @@
     <select id="buildAll" resultType="com.nood.hrm.dto.DepartmentDto">
         select d.id as id, d.parentId, d.deptName as title
             from sys_department d
-        <!-- <where> -->
-            <!-- 数据范围过滤 -->
-        <!-- ${params.dataScope} -->
-        <!-- </where> -->
+         <!--<where>-->
+            <!--&lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
+         <!--${dataScope}-->
+         <!--</where>-->
     </select>
 
 
@@ -51,8 +51,8 @@
 		select * from sys_department where find_in_set(#{id}, ancestors)
 	</select>
 
-    <select id="selectRoleDeptTree" parameterType="integer" resultType="com.nood.hrm.model.Department">
-		select d.id as id, d.parentId, d.no, d.deptName as title
+    <select id="selectRoleDeptTree" parameterType="integer" resultType="com.nood.hrm.dto.DepartmentDto">
+		select d.id as id, d.parentId, d.deptName as title
 		from sys_department d
 			left join sys_role_department rd on d.id = rd.departmentId
 		where rd.roleId = #{id}
