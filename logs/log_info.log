@@ -209,3 +209,63 @@ Error starting ApplicationContext. To display the conditions report re-run your 
 2020-12-10 00:09:08.092 [http-nio-8081-exec-6] INFO  com.nood.hrm.controller.RoleController - RoleController.getAll()
 2020-12-10 00:09:08.155 [http-nio-8081-exec-1] INFO  com.nood.hrm.controller.RoleUserController - RoleUserController.getRoleUserById(userId) param : 1
 2020-12-10 00:10:33.236 [http-nio-8081-exec-7] INFO  com.nood.hrm.security.auth.AuthSuccessHandler - 登录成功
+2020-12-10 00:16:22.893 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2020-12-10 00:16:22.895 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-9} closed
+2020-12-10 00:16:26.205 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - Starting HumanResousceApplication using Java 1.8.0_161 on noodles with PID 25716 (/Users/yanmeng/202/human-resousce-management/target/classes started by yanmeng in /Users/yanmeng/202/human-resousce-management)
+2020-12-10 00:16:26.209 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - The following profiles are active: dev
+2020-12-10 00:16:26.366 [restartedMain] INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-10 00:16:26.368 [restartedMain] INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-10 00:16:29.593 [restartedMain] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+2020-12-10 00:16:29.623 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2020-12-10 00:16:29.625 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2020-12-10 00:16:29.627 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.39]
+2020-12-10 00:16:29.935 [restartedMain] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2020-12-10 00:16:29.935 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3566 ms
+2020-12-10 00:16:33.403 [restartedMain] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2020-12-10 00:16:35.196 [restartedMain] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-10 00:16:35.395 [restartedMain] INFO  o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page template: index
+2020-12-10 00:16:36.332 [restartedMain] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@71e62398, org.springframework.security.web.context.SecurityContextPersistenceFilter@1202c2c9, org.springframework.security.web.header.HeaderWriterFilter@6b7c6355, org.springframework.security.web.authentication.logout.LogoutFilter@66d689fd, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@e48c55a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@34526be3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@645297d7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4462ca56, org.springframework.security.web.session.SessionManagementFilter@2ba2fb5d, org.springframework.security.web.access.ExceptionTranslationFilter@467cc541, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3518236]
+2020-12-10 00:16:36.630 [restartedMain] INFO  o.s.b.d.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2020-12-10 00:16:36.905 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2020-12-10 00:16:36.991 [restartedMain] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+2020-12-10 00:16:37.033 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - Started HumanResousceApplication in 11.652 seconds (JVM running for 13.271)
+2020-12-10 00:16:59.084 [http-nio-8081-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-12-10 00:16:59.085 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2020-12-10 00:16:59.086 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2020-12-10 00:17:05.814 [http-nio-8081-exec-5] INFO  com.nood.hrm.security.auth.AuthSuccessHandler - 登录成功
+2020-12-10 00:17:15.958 [http-nio-8081-exec-4] INFO  com.nood.hrm.controller.RoleController - RoleController.getAll()
+2020-12-10 00:17:16.026 [http-nio-8081-exec-5] INFO  com.nood.hrm.controller.RoleUserController - RoleUserController.getRoleUserById(userId) param : 1
+2020-12-10 00:18:04.896 [http-nio-8081-exec-6] INFO  com.nood.hrm.controller.RoleController - RoleController.getAll()
+2020-12-10 00:23:41.508 [http-nio-8081-exec-9] INFO  org.apache.tomcat.util.http.parser.Cookie - A cookie header was received [1606274436,1606391754; remember-me=YWRtaW46MTYwODczMDIwMzIxNzo0ZTA4Njg5MzNhNTE4OWI1YTY3YjFmODUzMTZlYzgxMg] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2020-12-10 00:23:47.951 [http-nio-8081-exec-9] INFO  com.nood.hrm.security.auth.AuthSuccessHandler - 登录成功
+2020-12-10 00:25:06.202 [http-nio-8081-exec-4] INFO  com.nood.hrm.controller.RoleController - RoleController.getAll()
+2020-12-10 00:25:06.441 [http-nio-8081-exec-1] INFO  com.nood.hrm.controller.RoleUserController - RoleUserController.getRoleUserById(userId) param : 1
+2020-12-10 00:28:49.419 [http-nio-8081-exec-10] INFO  com.nood.hrm.controller.RoleController - RoleController.getAll()
+2020-12-10 00:28:49.466 [http-nio-8081-exec-4] INFO  com.nood.hrm.controller.RoleUserController - RoleUserController.getRoleUserById(userId) param : 1
+2020-12-10 08:10:16.028 [SpringContextShutdownHook] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2020-12-10 08:10:16.050 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2020-12-10 08:10:34.366 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - Starting HumanResousceApplication using Java 1.8.0_161 on noodles with PID 26075 (/Users/yanmeng/202/human-resousce-management/target/classes started by yanmeng in /Users/yanmeng/202/human-resousce-management)
+2020-12-10 08:10:34.369 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - The following profiles are active: dev
+2020-12-10 08:10:34.478 [restartedMain] INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-10 08:10:34.481 [restartedMain] INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-10 08:10:36.377 [restartedMain] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+2020-12-10 08:10:36.390 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2020-12-10 08:10:36.391 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2020-12-10 08:10:36.392 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.39]
+2020-12-10 08:10:36.467 [restartedMain] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2020-12-10 08:10:36.467 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1984 ms
+2020-12-10 08:10:37.186 [restartedMain] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2020-12-10 08:10:37.907 [restartedMain] INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-10 08:10:38.060 [restartedMain] INFO  o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page template: index
+2020-12-10 08:10:38.469 [restartedMain] INFO  o.s.security.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@234d0e0b, org.springframework.security.web.context.SecurityContextPersistenceFilter@49781330, org.springframework.security.web.header.HeaderWriterFilter@5ea38c89, org.springframework.security.web.authentication.logout.LogoutFilter@45a9cde7, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@6297b7ef, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4f7f9070, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4680d6ec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2b7048d, org.springframework.security.web.session.SessionManagementFilter@11d7875f, org.springframework.security.web.access.ExceptionTranslationFilter@1a5ff8c2, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@4c8f530]
+2020-12-10 08:10:38.589 [restartedMain] INFO  o.s.b.d.autoconfigure.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2020-12-10 08:10:38.621 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2020-12-10 08:10:38.646 [restartedMain] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+2020-12-10 08:10:38.659 [restartedMain] INFO  com.nood.hrm.HumanResousceApplication - Started HumanResousceApplication in 5.371 seconds (JVM running for 6.954)
+2020-12-10 08:11:04.929 [http-nio-8081-exec-1] INFO  org.apache.tomcat.util.http.parser.Cookie - A cookie header was received [1606274436,1606391754; remember-me=YWRtaW46MTYwODczMDIwMzIxNzo0ZTA4Njg5MzNhNTE4OWI1YTY3YjFmODUzMTZlYzgxMg] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2020-12-10 08:11:04.945 [http-nio-8081-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-12-10 08:11:04.945 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2020-12-10 08:11:04.947 [http-nio-8081-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2020-12-10 08:11:10.583 [http-nio-8081-exec-2] INFO  com.nood.hrm.security.auth.AuthSuccessHandler - 登录成功
