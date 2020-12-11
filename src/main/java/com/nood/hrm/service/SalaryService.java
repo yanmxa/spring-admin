@@ -1,7 +1,7 @@
 package com.nood.hrm.service;
 
 import com.nood.hrm.base.response.Response;
-import com.nood.hrm.dto.SalaryConditionDto;
+import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.model.SalaryMeta;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +28,7 @@ public interface SalaryService {
 
     List<SalaryMetaDto> getSalaryTableHead();
 
-    Response getSalaryTable(Integer offset, Integer limit, SalaryConditionDto salaryConditionDto);
+    Response getSalaryTable(Integer offset, Integer limit, SalaryCustomDto salaryCustomDto);
 
     int deleteSalaryById(long id);
 }

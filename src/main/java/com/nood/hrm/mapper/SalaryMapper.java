@@ -1,10 +1,8 @@
 package com.nood.hrm.mapper;
 
-import com.nood.hrm.dto.SalaryConditionDto;
+import com.nood.hrm.dto.SalaryCustomDto;
 import org.apache.ibatis.annotations.*;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
-import sun.jvm.hotspot.runtime.PerfDataEntry;
 
 import java.util.List;
 import java.util.Map;
@@ -48,5 +46,5 @@ public interface SalaryMapper {
     int deleteById(long id);
 
     List<Map<String,Object>> getSalaryByFuzzyName(@Param("columns") List<String> columns,
-                                                  @Param("salaryConditionDto") SalaryConditionDto salaryConditionDto);
+                                                  @Param("salaryCustomDto") SalaryCustomDto salaryCustomDto);
 }

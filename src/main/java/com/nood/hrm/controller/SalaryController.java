@@ -2,7 +2,7 @@ package com.nood.hrm.controller;
 
 import com.nood.hrm.base.request.TableRequest;
 import com.nood.hrm.base.response.Response;
-import com.nood.hrm.dto.SalaryConditionDto;
+import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.model.SalaryMeta;
 import com.nood.hrm.service.SalaryService;
@@ -135,9 +135,9 @@ public class SalaryController {
 
     @GetMapping(value = "/salaryTable")
     @ResponseBody
-    public Response getSalaryTable(TableRequest tableRequest, SalaryConditionDto salaryConditionDto) {
+    public Response getSalaryTable(TableRequest tableRequest, SalaryCustomDto salaryCustomDto) {
         tableRequest.countOffset();
-        return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit(), salaryConditionDto);
+        return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit(), salaryCustomDto);
     }
 
     @RequestMapping(value = "/deleteSalaryByIdList", method = RequestMethod.POST)

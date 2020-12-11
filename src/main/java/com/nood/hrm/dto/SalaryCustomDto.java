@@ -4,7 +4,7 @@ import com.nood.hrm.model.BaseEntity;
 import lombok.Data;
 
 @Data
-public class SalaryConditionDto extends BaseEntity<Integer> {
+public class SalaryCustomDto extends BaseEntity<Integer> {
 
     private String name; // 部门名称或者姓名
 
@@ -17,9 +17,9 @@ public class SalaryConditionDto extends BaseEntity<Integer> {
 //    private Integer departmentId;
 
     // 用于和自动申城的薪资表进行关联
-    private String departmentNameAlias = "bu_men_ming_cheng";
+    private String departmentNameAlias = "bu_men_ming_cheng";       // 用作权限控制
     private String employeeNameAlias = "yuan_gong_ming_zi";
-    private String employeeNoAlias = "yuan_gong_bian_hao";
-    private String dateAlias = "yue_fen";
+    private String employeeNoAlias = "yuan_gong_bian_hao";          // 用作权限控制
+    private String dateAlias = "yue_fen";                           // 日期，用作数据过滤
 
 }

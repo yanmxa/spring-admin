@@ -26,12 +26,23 @@ public class PermissionController {
 
     @GetMapping("/build")
     @ResponseBody
-    public Response<List<MenuDto>> buildMenu(String roleId) {
+    public Response<List<MenuDto>> buildTreeByRoleId(String roleId) {
+
 
         List<MenuDto> menus = permissionService.buildMenu(roleId);
 
         return Response.success(ResponseCode.SUCCESS, menus);
     }
+
+//    @GetMapping("/build")
+//    @ResponseBody
+//    public Response<List<MenuDto>> buildTreeByPermissionId(String id) {
+//
+//        List<MenuDto> menus = permissionService.buildMenuByPermissionId(id);
+//
+//        return Response.success(ResponseCode.SUCCESS, menus);
+//    }
+
 
 
     @RequestMapping(value = "/listAllPermission", method = RequestMethod.GET)
@@ -47,7 +58,6 @@ public class PermissionController {
     @ResponseBody
 //    @ApiOperation(value = "获取角色权限", notes = "根据角色Id去查询拥有的权限")//描述
     public Response<Permission> listAllPermissionByRoleId(RoleDto roleDto) {
-        log.info(getClass().getName() + " : param =  " + roleDto);
         return permissionService.listByRoleId(roleDto.getId().intValue());
     }
 

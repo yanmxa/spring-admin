@@ -1,7 +1,7 @@
 package com.nood.hrm.service.impl;
 
 import com.nood.hrm.base.response.Response;
-import com.nood.hrm.dto.SalaryConditionDto;
+import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.mapper.DepartmentMapper;
 import com.nood.hrm.mapper.RoleDepartmentMapper;
@@ -17,7 +17,6 @@ import com.nood.hrm.util.ExcelData;
 import com.nood.hrm.util.ExcelUtil;
 import com.nood.hrm.util.PinyinUtil;
 import com.nood.hrm.util.SecurityUtil;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.nood.hrm.security.data.DataScope.*;
@@ -226,27 +224,27 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
 //    @DataPermission(departmentAlias = "d", userAlias = "u")
-    public Response getSalaryTable(Integer offset, Integer limit, SalaryConditionDto salaryConditionDto) {
+    public Response getSalaryTable(Integer offset, Integer limit, SalaryCustomDto salaryCustomDto) {
 
 
         // 1.1 根据salaryConditionDto先筛选出一批数据
-        List<Map<String, Object>> salaryByFuzzyName = getSalaryByFuzzyName(salaryConditionDto);
+        List<Map<String, Object>> salaryByFuzzyName = getSalaryByFuzzyName(salaryCustomDto);
 
         // 1.2 从loginUser中获取 DepartmentSet 过滤后，排序，返回一个List
         Set<String> departmentNameSet = getDepartmentNamePermission();
         List<Map<String, Object>> salaryByFilter = salaryByFuzzyName.stream()
                 .filter(recordMap -> {
                     if (departmentNameSet.size() > 0) {
-                        String departmentName = (String) recordMap.get(salaryConditionDto.getDepartmentNameAlias());
+                        String departmentName = (String) recordMap.get(salaryCustomDto.getDepartmentNameAlias());
                         return departmentNameSet.contains(departmentName);
                     } else {
-                        return SecurityUtil.getCurrentUser().getNo() == recordMap.get(salaryConditionDto.getEmployeeNoAlias());
+                        return SecurityUtil.getCurrentUser().getNo() == recordMap.get(salaryCustomDto.getEmployeeNoAlias());
                     }
                 })
 //                .sorted((o1, o2) -> {
-//                    System.out.println(salaryConditionDto.getEmployeeNoAlias());
-//                    Integer s1 = Integer.valueOf((String) o1.getOrDefault(salaryConditionDto.getEmployeeNoAlias(), "0"));
-//                    Integer s2 = Integer.valueOf((String) o2.getOrDefault(salaryConditionDto.getEmployeeNoAlias(), "0"));
+//                    System.out.println(salaryCustomDto.getEmployeeNoAlias());
+//                    Integer s1 = Integer.valueOf((String) o1.getOrDefault(salaryCustomDto.getEmployeeNoAlias(), "0"));
+//                    Integer s2 = Integer.valueOf((String) o2.getOrDefault(salaryCustomDto.getEmployeeNoAlias(), "0"));
 //                    return s1.compareTo(s2);
 //                })
                 .collect(Collectors.toList());
@@ -303,17 +301,17 @@ public class SalaryServiceImpl implements SalaryService {
 
     /**
      * 根据前端页面获取薪水信息
-     * @param salaryConditionDto
+     * @param salaryCustomDto
      * @return
      */
-    private List<Map<String,Object>> getSalaryByFuzzyName(SalaryConditionDto salaryConditionDto) {
+    private List<Map<String,Object>> getSalaryByFuzzyName(SalaryCustomDto salaryCustomDto) {
         List<String> columns = salaryMetaMapper.getAllMeta()
                 .stream()
                 .map(e -> PinyinUtil.hanziToPinyin(e.getName(), "_"))
                 .collect(Collectors.toList());
         if (columns != null && columns.size() > 0) columns.add(0, "id");
 
-        List<Map<String, Object>> salaryByFuzzyName = salaryMapper.getSalaryByFuzzyName(columns, salaryConditionDto);
+        List<Map<String, Object>> salaryByFuzzyName = salaryMapper.getSalaryByFuzzyName(columns, salaryCustomDto);
         return salaryByFuzzyName;
     }
 

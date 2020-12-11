@@ -25,4 +25,6 @@ public interface PermissionService {
     Response<Permission> deleteById(Integer id);
 
     List<MenuDto> buildMenu(String roleId);
+
+    List<MenuDto> buildMenuByPermissionId(String id);
 }

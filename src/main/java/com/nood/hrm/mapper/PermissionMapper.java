@@ -42,4 +42,7 @@ public interface PermissionMapper {
 //    @Result(property = "title",column = "menu_name")
 //    @Result(property = "id",column = "menu_id")
     List<MenuDto> buildAllMenu();
+
+//    @Select("select * from sys_permission where find_in_set(#{id}, a)")
+//    List<Permission> listParentById(String id);
 }

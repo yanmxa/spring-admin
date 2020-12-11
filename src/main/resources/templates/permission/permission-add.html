@@ -5,97 +5,152 @@
     <meta charset="UTF-8">
     <title>新增权限信息</title>
     <header th:replace="header::html"></header>
-    <link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />
-    <link rel="stylesheet" th:href="@{/ztree/demo.css}" />
+    <!--<link rel="stylesheet" th:href="@{/ztree/zTreeStyle/zTreeStyle.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/ztree/demo.css}" />-->
+    <link rel="stylesheet" th:href="@{/component/pear/css/pear.css}" />
+
 </head>
 
 <body>
 <div class="x-body">
 
-    <form class="layui-form">
+    <form class="layui-form" style="padding: 2% 12% 0% 8%">
+
         <input type="text" id="id" th:value="${permission.id}" name="id" style="display:none;" autocomplete="off" class="layui-input">
+
         <div class="layui-form-item">
             <label for="L_name" class="layui-form-label">
                 <span class="x-red">*</span>菜单名
             </label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" id="L_name" th:value="${permission.name}" name="name" required="" lay-verify="name" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*</span>将会成为菜单名
+                <span class="x-red"></span>
             </div>
         </div>
+
+
         <div class="layui-form-item">
-            <label for="L_css" class="layui-form-label">
-                <span class="x-red"></span>样式
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="L_css" th:value="${permission.css}" name="css" required="" lay-verify="css" autocomplete="off" class="layui-input">
+            <label class="layui-form-label">上级菜单</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="parentId" th:value="${permission.parentId}" name="parentId">
+                <ul id="dataTree" class="dtree" data-id="0" th:data-value="${permission.parentId}"></ul>
             </div>
             <div class="layui-form-mid layui-word-aux">
             </div>
         </div>
+
+
+        <!--<div class="layui-form-item">-->
+            <!--<label for="L_css" class="layui-form-label">-->
+                <!--<span class="x-red"></span>样式-->
+            <!--</label>-->
+            <!--<div class="layui-input-block">-->
+                <!--<input type="text" id="L_css" th:value="${permission.css}" name="css" required="" lay-verify="css" autocomplete="off" class="layui-input">-->
+            <!--</div>-->
+            <!--<div class="layui-form-mid layui-word-aux">-->
+            <!--</div>-->
+        <!--</div>-->
+
         <div class="layui-form-item">
             <label for="L_name" class="layui-form-label">
                 <span class="x-red"></span>链接
             </label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" id="L_href" th:value="${permission.href}" name="href"  lay-verify="href" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red"></span>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <select id="selectType" name="type" lay-filter="type" th:value="${permission.type}" >
                     <option value="1">菜单</option>
                     <option value="2">按钮</option>
                 </select>
             </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red"></span>
+            </div>
         </div>
+
         <div class="layui-form-item">
             <label for="L_name" class="layui-form-label">
                 <span class="x-red"></span>权限值
             </label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" id="L_permission" th:value="${permission.permission}" name="permission"  lay-verify="permission" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red"></span>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label for="L_name" class="layui-form-label">
                 <span class="x-red">*</span>排序
             </label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" id="L_sort" th:value="${permission.sort}" name="sort" required="" lay-verify="sort" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
             </div>
         </div>
+
+
+
         <div class="layui-form-item">
-            <label class="col-md-2 control-label layui-form-label">上级菜单</label>
-            <div class="col-md-10">
-                <input type="text" id="parentId" th:value="${permission.parentId}" name="parentId"  lay-verify="parentId" style="display:none;" autocomplete="off" class="layui-input">
-                <ul id="treeDemo" class="ztree"></ul>
-            </div>
-        </div>
-        <div class="layui-form-item">
+            <label  class="layui-form-label">
+            </label>
             <button  class="layui-btn" lay-filter="add" lay-submit="">
                 保存
             </button>
+
+            <!--<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">-->
+                <!--&lt;!&ndash;<i class="layui-icon layui-icon-refresh"></i>&ndash;&gt;-->
+                <!--重置-->
+            <!--</button>-->
         </div>
     </form>
 </div>
 <script>
-    layui.use(['form','layer', 'laydate'], function(){
-        $ = layui.jquery;
-        var form = layui.form
-            ,layer = layui.layer
-            ,laydate = layui.laydate;
+
+
+
+
+    layui.config({
+        base: '/'
+    }).extend({
+        dtree: 'component/layui_ext/dtree/dtree'
+    }).use(['dtree','form','jquery', 'form','layer', 'laydate'], function(){
+
+
+        let form = layui.form, layer = layui.layer, laydate = layui.laydate;
+        let $ = layui.jquery;
+        let dtree = layui.dtree;
+        let permissionId = $("#id").val();
+        dtree.render({
+            elem: "#dataTree",
+            initLevel: "1",
+            width: "100%",
+            method: 'get',
+            dataStyle: "layuiStyle",  //使用layui风格的数据格式
+            response:{message:"msg",statusCode:200},  //修改response中返回数据的定义
+            url: "/permission/build",
+            dataFormat: "list",  //配置data的风格为list
+            select: true, //指定下拉树模式
+            selectTips: "不选默认是顶级目录",
+            selectCardHeight: "240"
+
+        });
+        dtree.on("node('dataTree')" ,function(obj){
+            var param = dtree.getNowParam("dataTree");
+            $("#parentId").val(param.nodeId);
+        });
 
         //日期
         laydate.render({
@@ -119,14 +174,9 @@
 
         //监听提交
         form.on('submit(add)', function(data){
-            console.log(data);
-            var permissionIds = getCheckedMenuIds();
             if(data.field.sort.length <= 0) {
                 layer.msg('请填写排序值');
-            }else if(permissionIds.length <= 0){
-                layer.msg('请选择对应的上级菜单');
             } else {
-                data.field.parentId = permissionIds[0];
                 var isUpdate = false;
                 if(data.field.id && data.field.id.length > 0  ){
                     isUpdate = true;
@@ -149,10 +199,10 @@
             }
             return false;
         });
-        initSelectType();
+        // initSelectType();
     });
-    $.fn.zTree.init($("#treeDemo"), getSettting(true), onlyGetMenuTree());
-    initRadioCheckTree();
+    // $.fn.zTree.init($("#treeDemo"), getSettting(true), onlyGetMenuTree());
+    // initRadioCheckTree();
 </script>
 </body>
 </html>
