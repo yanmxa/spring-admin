@@ -2,18 +2,14 @@ package com.nood.hrm.controller;
 
 import com.nood.hrm.base.request.TableRequest;
 import com.nood.hrm.base.response.Response;
-import com.nood.hrm.base.response.ResponseCode;
-import com.nood.hrm.dto.SalaryItemDto;
-import com.nood.hrm.dto.UserDto;
+import com.nood.hrm.dto.SalaryConditionDto;
+import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.model.SalaryMeta;
-import com.nood.hrm.model.User;
 import com.nood.hrm.service.SalaryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +101,7 @@ public class SalaryController {
 
     @RequestMapping(value = "/deleteByIdList", method = RequestMethod.POST)
     @ResponseBody
-    public Response DeleteByIdList(@RequestParam("idList") List<Integer> idList) {
+    public Response DeleteMetaByIdList(@RequestParam("idList") List<Integer> idList) {
         for (Integer id : idList) {
             int count = salaryService.deleteMetaBy(id);
             if (count < 0) return Response.failure("删除失败");
@@ -131,15 +125,29 @@ public class SalaryController {
 
     @RequestMapping(value = "/tableHead", method = RequestMethod.GET)
     @ResponseBody
-    public List<SalaryItemDto> getSalaryTableHead() {
+    public List<SalaryMetaDto> getSalaryTableHead() {
         return salaryService.getSalaryTableHead();
     }
 
+
+
+
+
     @GetMapping(value = "/salaryTable")
     @ResponseBody
-    public Response getSalaryTable(TableRequest tableRequest) {
+    public Response getSalaryTable(TableRequest tableRequest, SalaryConditionDto salaryConditionDto) {
         tableRequest.countOffset();
-        return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit());
+        return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit(), salaryConditionDto);
+    }
+
+    @RequestMapping(value = "/deleteSalaryByIdList", method = RequestMethod.POST)
+    @ResponseBody
+    public Response DeleteSalaryByIdList(@RequestParam("idList") List<Integer> idList) {
+        for (Integer id : idList) {
+            int count = salaryService.deleteSalaryById(id.longValue());
+            if (count < 0) return Response.failure("删除失败");
+        }
+        return Response.success();
     }
 
 }

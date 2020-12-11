@@ -1,5 +1,6 @@
 package com.nood.hrm.mapper;
 
+import com.nood.hrm.dto.SalaryConditionDto;
 import org.apache.ibatis.annotations.*;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
@@ -42,4 +43,10 @@ public interface SalaryMapper {
     List<Map<String,Object>> getAllSalaryByPage(@Param("startPosition") Integer offset,
                                                 @Param("limit") Integer limit,
                                                 @Param("columns") List<String> columns);
+
+    @Delete("delete from salary where id = #{id}")
+    int deleteById(long id);
+
+    List<Map<String,Object>> getSalaryByFuzzyName(@Param("columns") List<String> columns,
+                                                  @Param("salaryConditionDto") SalaryConditionDto salaryConditionDto);
 }

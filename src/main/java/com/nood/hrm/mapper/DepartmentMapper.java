@@ -16,7 +16,7 @@ public interface DepartmentMapper {
      * @param department 查询的名称
      * @return
      */
-    List<Department> getFuzzyDept(Department department);
+    List<Department> getFuzzyDept(@Param("department") Department department);
 
 
     /**
@@ -62,7 +62,7 @@ public interface DepartmentMapper {
     /**
      * 根据ID查询所有子部门
      *
-     * @param id 部门ID
+     * @param id 父亲部门ID
      * @return 部门列表
      */
      List<Department> selectChildrenDeptById(Integer id);

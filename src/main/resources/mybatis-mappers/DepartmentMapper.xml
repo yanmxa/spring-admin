@@ -12,11 +12,11 @@
     <select id="getFuzzyDept" resultType="com.nood.hrm.model.Department">
         <include refid="selectDeptVo"/>
         <where>
-            <if test="deptName != null and deptName != ''">
-                AND d.deptName like CONCAT('%', #{deptName}, '%')
+            <if test="department.deptName != null and department.deptName != ''">
+                AND d.deptName like CONCAT('%', #{department.deptName}, '%')
             </if>
-            <if test="status != null and status != ''">
-                AND d.status = #{status}
+            <if test="department.status != null and department.status != ''">
+                AND d.status = #{department.status}
             </if>
             <!-- 数据范围过滤 -->
             <!-- ${params.dataScope} -->

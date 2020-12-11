@@ -26,4 +26,26 @@
       from salary limit #{startPosition}, #{limit}
     </select>
 
+
+    <select id="getSalaryByFuzzyName" resultType="java.util.HashMap">
+        select
+        <foreach collection="columns" item="column" separator=",">
+            ${column}
+        </foreach>
+        from salary
+        <where>
+
+            <if test="salaryConditionDto.date != null and salaryConditionDto.date != ''">
+                AND ${salaryConditionDto.dateAlias} = #{salaryConditionDto.date}
+            </if>
+
+            <if test="salaryConditionDto.name != null and salaryConditionDto.name != ''">
+                AND ${salaryConditionDto.departmentNameAlias} like CONCAT('%', #{salaryConditionDto.name}, '%')
+                OR ${salaryConditionDto.employeeNameAlias} like CONCAT('%', #{salaryConditionDto.name}, '%')
+            </if>
+
+        </where>
+        order by ${salaryConditionDto.employeeNoAlias}
+    </select>
+
 </mapper>

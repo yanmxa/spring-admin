@@ -53,7 +53,7 @@ public class UserController {
 
         tableRequest.countOffset();
 
-        return userService.getAllUserByPage(tableRequest.getOffset(), tableRequest.getLimit());
+        return userService.getAllUserByPage(tableRequest.getOffset(), tableRequest.getLimit(), new User());
     }
 
     @GetMapping(value = "/add")

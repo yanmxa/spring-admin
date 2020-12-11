@@ -1,9 +1,16 @@
 package com.nood.hrm.security.data;
+import cn.hutool.core.util.StrUtil;
+import com.nood.hrm.model.BaseEntity;
+import com.nood.hrm.model.Role;
+import com.nood.hrm.security.user.LoginUser;
 import com.nood.hrm.service.RoleUserService;
+import com.nood.hrm.util.SecurityUtil;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +26,7 @@ public class DataScopeAspect {
 
     @Autowired
     public RoleUserService roleUserService;
+
     /**
      * 全部数据权限
      */
@@ -60,24 +68,18 @@ public class DataScopeAspect {
         handleDataScope(point);
     }
 
-    protected void handleDataScope(final JoinPoint joinPoint)
-    {
+    protected void handleDataScope(final JoinPoint joinPoint) {
         // 获得注解
-        DataPermission controllerDataScope = getAnnotationLog(joinPoint);
-        if (controllerDataScope == null)
-        {
+        DataPermission dataPermissionAnnotation = getAnnotation(joinPoint);
+        if (dataPermissionAnnotation == null) {
             return;
         }
-        // 获取当前的用户
-        JwtUserDto currentUser = SecurityUtils.getCurrentUser();
-        if (currentUser != null)
-        {
-            // 如果是超级管理员，则不过滤数据
-            if (!currentUser.getMyUser().isAdmin())
-            {
-                dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),
-                        controllerDataScope.userAlias());
-            }
+        // 获取当前的用户, 如果是超级管理员，则不过滤数据
+        LoginUser loginUser = SecurityUtil.getCurrentUser();
+        if (loginUser != null && !loginUser.isAdmin()) {
+            dataScopeFilter(joinPoint, loginUser,
+                    dataPermissionAnnotation.departmentAlias(),
+                    dataPermissionAnnotation.userAlias());
         }
     }
 
@@ -89,50 +91,43 @@ public class DataScopeAspect {
      * @param deptAlias 部门别名
      * @param userAlias 用户别名
      */
-    public static void dataScopeFilter(JoinPoint joinPoint, JwtUserDto user, String deptAlias, String userAlias)
-    {
+    public static void dataScopeFilter(JoinPoint joinPoint, LoginUser user, String deptAlias, String userAlias) {
+
         StringBuilder sqlString = new StringBuilder();
 
-        for (MyRole role : user.getRoleInfo())
-        {
+        for (Role role : user.getRoles()) {
+
             String dataScope = role.getDataScope();
-            if (DATA_SCOPE_ALL.equals(dataScope))
-            {
+            if (DATA_SCOPE_ALL.equals(dataScope)) {
                 sqlString = new StringBuilder();
                 break;
+            } else if (DATA_SCOPE_CUSTOM.equals(dataScope)) {
+                sqlString.append(
+                        StrUtil.format(
+                        " OR {}.id IN ( SELECT departmentId FROM sys_role_department WHERE roleId = {} ) ",
+                                deptAlias, role.getId()));
+
+//                System.out.println(sqlString.toString());
+            } else if (DATA_SCOPE_DEPT.equals(dataScope)) {
+                sqlString.append(StrUtil.format(" OR {}.id = {} ", deptAlias, user.getDepartmentId()));
+            } else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope)) {
+                sqlString.append(
+                        StrUtil.format(
+                        " OR {}.id IN ( SELECT id FROM sys_department WHERE id = {} or find_in_set( {} , ancestors ) )",
+                        deptAlias, user.getDepartmentId(), user.getDepartmentId()));
             }
-            else if (DATA_SCOPE_CUSTOM.equals(dataScope))
-            {
-                sqlString.append(StrUtil.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM my_role_dept WHERE role_id = {} ) ", deptAlias,
-                        role.getRoleId()));
-            }
-            else if (DATA_SCOPE_DEPT.equals(dataScope))
-            {
-                sqlString.append(StrUtil.format(" OR {}.dept_id = {} ", deptAlias, user.getMyUser().getDeptId()));
-            }
-            else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
-            {
-                sqlString.append(StrUtil.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM my_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
-                        deptAlias, user.getMyUser().getDeptId(), user.getMyUser().getDeptId()));
-            }
-            else if (DATA_SCOPE_SELF.equals(dataScope))
-            {
-                if (StrUtil.isNotBlank(userAlias))
-                {
-                    sqlString.append(StrUtil.format(" OR {}.user_id = {} ", userAlias, user.getMyUser().getUserId()));
+            else if (DATA_SCOPE_SELF.equals(dataScope)) {
+                if (StrUtil.isNotBlank(userAlias)) {
+                    sqlString.append(StrUtil.format(" OR {}.id = {} ", userAlias, user.getId()));
                 }
-                else
-                {
+                else {
                     // 数据权限为仅本人且没有userAlias别名不查询任何数据
                     sqlString.append(" OR 1=0 ");
                 }
 
             }
         }
-        if (StrUtil.isNotBlank(sqlString.toString()))
-        {
+        if (StrUtil.isNotBlank(sqlString.toString())) {
             BaseEntity baseEntity;
             for (int i = 0;i < joinPoint.getArgs().length ;i++ ){
                 if (joinPoint.getArgs()[i] instanceof BaseEntity){
@@ -147,14 +142,11 @@ public class DataScopeAspect {
     /**
      * 是否存在注解，如果存在就获取
      */
-    private DataPermission getAnnotationLog(JoinPoint joinPoint)
-    {
+    private DataPermission getAnnotation(JoinPoint joinPoint) {
         Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
-
-        if (method != null)
-        {
+        if (method != null) {
             return method.getAnnotation(DataPermission.class);
         }
         return null;

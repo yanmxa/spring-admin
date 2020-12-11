@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Friday-System</title>
     <header th:replace="header::html"></header>
+    <!--<link rel="stylesheet" th:href="@{/component/pear/css/pear.css}" />-->
+
 </head>
 
 <body class="layui-anim layui-anim-up">
@@ -20,29 +22,41 @@
     </a>
 </div>
 <div class="x-body" id="container">
-    <div class="demoTable">
-        员工工号：
-        <div class="layui-inline">
-            <input class="layui-input" name="account" id="accountId" autocomplete="off">
-        </div>&nbsp&nbsp&nbsp
-        部门：
-        <div class="layui-inline">
-            <!--<input class="layui-input" name="id" id="dId" autocomplete="off">-->
-            <div class="layui-input-inline">
-                <select name="department" id="departmentId" lay-verify="required" lay-search="">
-                    <option value="">直接选择或搜索选择</option>
-                </select>
+    <div class="demoTable layui-card-body">
+
+            <!--<div class="layui-inline">-->
+                <!--&lt;!&ndash;<input class="layui-input" name="id" id="dId" autocomplete="off">&ndash;&gt;-->
+                <!--<div class="layui-input-inline">-->
+                        <!--&lt;!&ndash;<input type="number" id="departmentId" th:value="${user.departmentId}" name="departmentId"  lay-verify="departmentId" style="display:none;width: 0px" autocomplete="off" class="layui-input">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<ul id="dataTree" class="dtree" data-id="0" th:data-value="${user.departmentId}"></ul>&ndash;&gt;-->
+                        <!--<input type="text" id="departmentNameId" name="departmentName"  lay-verify="departmentName" style="display:none;width: 0px" autocomplete="off" class="layui-input">-->
+                        <!--<input type="number" id="departmentIdId" name="departmentId"  lay-verify="departmentNameId" style="display:none;width: 0px" autocomplete="off" class="layui-input">-->
+                        <!--<ul id="dataTree" class="dtree" data-id="0"></ul>-->
+                    <!--&lt;!&ndash;<select name="department" id="departmentId" lay-verify="required" lay-search="">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<option value="">直接选择或搜索选择</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</select>&ndash;&gt;-->
+                <!--</div>-->
+            <!--</div>&nbsp;&nbsp;&nbsp;&nbsp;-->
+            月份：
+            <div class="layui-inline">
+                <input name="date" id="dateId" lay-verify="date" autocomplete="off" class="layui-input" type="text" readonly>
             </div>
-        </div>&nbsp;&nbsp;&nbsp;&nbsp;
-        月份：
-        <div class="layui-inline">
-            <input name="date" id="dateId" lay-verify="date" autocomplete="off" class="layui-input" type="text" readonly>
-        </div>&nbsp&nbsp&nbsp
-        <button class="layui-btn" data-type="reload">搜索</button>
-        <button class="layui-btn" id="download" >下载工资表格</button>
+            <div class="layui-inline" style="width: 20%;">
+                <input class="layui-input" name="name" id="nameId" autocomplete="off" placeholder="请输入部门或姓名">
+            </div>
+
+            <button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+            <div class="layui-inline layui-btn-group" style="float: right;">
+                <button class="layui-btn" id="deleteCheckedId" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
+                <button class="layui-btn"  id="downloadId" ><i class="layui-icon">&#xe601;</i>下载数据</button>
+            </div>
     </div>
 
+
+
+
     <div class="layui-card-body ">
+
         <div style="text-align: center">
             <table class="layui-table" lay-filter="salaryTable" id="salaryTableId">
             </table>
@@ -82,110 +96,165 @@
 
     // window.onload = function () {
     //     //加载部门下拉搜索框
-    //     var dId = $("#dId");
+    //     var departmentSelect = $("#departmentId");
     //     $.ajax({
-    //         url:'department/findSelective.do?page=1&limit=999', //分页限制为999条，就是全部
+    //         url:'department/findSelective?page=1&limit=999', //分页限制为999条，就是全部
     //         dataType:'json',
     //         type:'post',
     //         success:function(result){
     //             // console.log(result);
-    //             $.each(result.data,function(index,item){
+    //             $.each(result.data, function(index, departmentDto){
     //                 // console.log(index + "&" + item.dId);
-    //                 dId.append("<option value="+item.dId+">"+item.dName+"</option>");// 下拉菜单里添加元素
+    //                 departmentSelect.append("<option value="+departmentDto.id+">"+departmentDto.title+"</option>");// 下拉菜单里添加元素
     //             })
     //         }
     //     });
     // }
-
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
-
-        var headData = getSalaryTableHead();
-        console.log(headData)
-
-        var form = layui.form
-            ,layer = layui.layer
-            ,layedit = layui.layedit
+    layui.config({
+        base: '/'
+    }).extend({
+        dtree: 'component/layui_ext/dtree/dtree'
+    }).use(['form','layer','dtree', 'layedit', 'laydate','table'], function(){
+        var layer = layui.layer
+            // ,layedit = layui.layedit
             ,laydate = layui.laydate
             ,table = layui.table;
+        let dtree = layui.dtree;
+        var $ = layui.$;
+
+        //年月范围
+        laydate.render({
+            elem: '#dateId', //指定元素
+            type: 'month',
+            // type: 'datetime', // 可选择：年、月、日、时、分、秒
+            // format: 'yyyy-MM-dd HH:mm:ss', //指定时间格式
+            value: new Date(), // 指定值
+        });
+
+        // 初始化树
+        // dtree.render({
+        //     elem: "#dataTree",
+        //     initLevel: "1",
+        //     width: "100%",
+        //     method: 'get',
+        //     dataStyle: "layuiStyle",  //使用layui风格的数据格式
+        //     response:{message:"msg",statusCode:200},  //修改response中返回数据的定义
+        //     url: "/department/build",
+        //     dataFormat: "list",  //配置data的风格为list
+        //     select: true, //指定下拉树模式
+        //     selectCardHeight: "200",
+        // });
+        // dtree.on("node('dataTree')" ,function(obj){
+        //     var param = dtree.getNowParam("dataTree");
+        //     $("#departmentIdId").val(param.nodeId);
+        //     $("#departmentNameId").val(param.context);
+        // });
 
 
-        table.render({
+        // table
+        var headData = []
+        headData.push({type:   'checkbox', fixed: 'left'})
+        headData.push({field: 'id', title: 'ID', align:'center', hide: true})
+        heads = getSalaryTableHead()
+
+        var len=heads.length;
+        for(var i=0;i<len;i++){
+            headData.push(heads[i])
+
+        }
+
+        function getCondition() {
+            var conditionData = {
+                name : $('#nameId').val(),
+                // departmentId : $('#departmentIdId').val(),
+                // departmentName : $('#departmentNameId').val(),
+                date : $('#dateId').val()
+            }
+            return conditionData
+        }
+
+
+        var options = {
             elem: '#salaryTableId'
             ,url: '/salary/salaryTable' //数据接口
             ,type: 'get'
             ,page: true //开启分页
+            // ,skin:'row'
             ,response: {
                 countName: 'count', //规定数据总数的字段名称，默认：count
                 dataName: 'datas' //规定数据列表的字段名称，默认：data
             }
+            ,where: getCondition()
             ,cellMinWidth: 100
             ,cols: [
                 headData
-                // [ //表头
-                //
-                //     // {type:   'checkbox', fixed: 'left'}
-                //     // ,{field: 'id', title: 'ID', align:'center', width:50}
-                //     // ,{field: 'name', title: '薪酬字段'}
-                //     // ,{field: 'type', title: '分类'}
-                //     // ,{field: 'property', title: '性质'}
-                //     // ,{field: 'detail', title: '描述'}
-                //     // ,{field: 'status', title: '状态',  templet:function(d){
-                //     //     return  d.status == '1' ? "启动":"禁用";
-                //     // }}
-                //     // ,{field: 'isDecimal', title: '是否数值',  templet:function(d){
-                //     //     return  d.isDecimal == '1' ? "是":"否";
-                //     // }}
-                //     // ,{field: 'sort', title: '排序'}
-                //     // ,{title:'操作', toolbar: '#barButtons',align:'center'}
-                // ]
             ],
             done: function(){
-                table.resize('salaryTable');
+                // table.resize('salaryTable');
+                $(".layui-table").css("width", "100%")
                 // checkPermission()
             }
-        });
-
-
-        //年月范围
-        laydate.render({
-            elem: '#dateId'
-            ,type: 'month'
-        });
+        }
+        table.render(options);
 
         //监听工具条
-
         var $ = layui.$, active = {
-
             reload: function(){
-                var account = $('#accountId');
-                var department = $('#departmentId');
-                var date = $('#dateId');
-                // console.log(account.val()+" "+department.val()+" "+date.val());
-                // 执行重载
-                table.reload('salaryTable', {
+                options = {
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
-                    ,where: {
-                        account: account.val(),
-                        department: department.val(),
-                        date: date.val()
-                    }
-                });
+                    , where: getCondition()
+                }
+
+                //执行重载
+                table.reload('salaryTableId', options);
             }
         };
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
         function download(){
-            var eAccount = $('#eAccount').val();
+            var eAccount = $('#noId').val();
             var dId = $('#dId').val();
             var date = $('#date').val();
             window.location.href="downloadExcel.do?eAccount="+eAccount+"&dId="+dId+"&sTime="+date
         }
-        $('#download').on('click',function () {
+        $('#downloadId').on('click',function () {
             download();
         })
-        $('.demoTable .layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
+
+        $('#deleteCheckedId').on('click', function () {
+            var checkStatus = table.checkStatus('salaryTableId'), data = checkStatus.data;
+            var ids = [];
+            $.each(data, function (index, item) {
+                // alert(item.username)
+                ids.push(item.id);
+            });
+
+            layer.confirm('确定要删除吗?', function (index) {
+                $.ajax({
+                    type:'post',
+                    url: '/salary/deleteSalaryByIdList',
+                    data: {"idList": ids},
+                    traditional: true,
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
+                            layer.alert(data.msg);
+                        } else {
+                            table.reload('salaryTableId');
+                            layer.msg('已删除!', {icon: 1, time: 500});
+                        }
+                    },
+                    error: function (data) {
+                        layer.alert("抱歉，出现未知错误！", {icon: 5});
+                    }
+                });
+                // layer.close(index);
+            });
         });
     });
 

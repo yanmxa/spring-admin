@@ -1,24 +1,20 @@
 package com.nood.hrm.service.impl;
 
 import com.nood.hrm.base.response.Response;
-import com.nood.hrm.base.response.ResponseCode;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.mapper.RoleMapper;
 import com.nood.hrm.mapper.RoleUserMapper;
 import com.nood.hrm.mapper.UserMapper;
 import com.nood.hrm.model.RoleUser;
 import com.nood.hrm.model.User;
-import com.nood.hrm.security.SpringSecurityConfig;
+import com.nood.hrm.security.data.DataPermission;
 import com.nood.hrm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -40,7 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Response<UserDto> getAllUserByPage(Integer offset, Integer limit) {
+    @DataPermission(departmentAlias = "d", userAlias = "u")
+    public Response<UserDto> getAllUserByPage(Integer offset, Integer limit, User user) {
 //        List<UserDto> userDtos = userMapper.getAllUserByPage(offset, limit)
 //                .stream()
 //                .map(user -> {
@@ -53,7 +50,8 @@ public class UserServiceImpl implements UserService {
 //                .collect(Collectors.toList());
 
 
-        List<UserDto> userDtos = userMapper.getAllUserDtoByPage(offset, limit);
+        List<UserDto> userDtos = userMapper.getAllUserDtoByPage(offset, limit, user);
+
         return Response.success(userMapper.countAllUsers().intValue(), userDtos);
     }
 
@@ -69,6 +67,7 @@ public class UserServiceImpl implements UserService {
 //        }
         user.setStatus(1);
         user.setPassword(new BCryptPasswordEncoder().encode(User.defaultPassword));
+        userMapper.save(user);
 
         if (roleId != null) {
             RoleUser roleUser = new RoleUser();
@@ -76,7 +75,6 @@ public class UserServiceImpl implements UserService {
             roleUser.setUserId(user.getId().intValue());
             roleUserMapper.save(roleUser);
         }
-        userMapper.save(user);
 
         return Response.success("保存成功，默认密码为：" + User.defaultPassword);
     }

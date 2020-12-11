@@ -3,6 +3,7 @@ package com.nood.hrm.mapper;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.model.User;
+import com.nood.hrm.security.user.LoginUser;
 import oracle.jrockit.jfr.events.Bits;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -56,7 +57,7 @@ public interface UserMapper {
             "left join sys_role_user ru on u.id = ru.userId " +
             "left join sys_department d on u.departmentId = d.id " +
             "inner join sys_role r on ru.roleId = r.id " +
-            "order by u.id limit #{startPosition}, #{limit}")
+            "where 1=1 ${user.params.dataScope} order by u.id limit #{startPosition}, #{limit}")
     @Results(id="userDtoMap", value = {
             @Result(property = "id", column = "id", id=true),
             @Result(property = "departmentId", column = "departmentId"),
@@ -68,7 +69,8 @@ public interface UserMapper {
             @Result(property = "departmentName", column = "deptName"),
             @Result(property = "roleName", column = "name")
     })
-    List<UserDto> getAllUserDtoByPage(@Param("startPosition") Integer startPosition, @Param("limit") Integer limit);
+    List<UserDto> getAllUserDtoByPage(@Param("startPosition") Integer startPosition, @Param("limit") Integer limit,
+                                      @Param("user") User user);
 
     @Select("select * from sys_user t where t.no = #{no}")
     User getUserByNo(Integer no);

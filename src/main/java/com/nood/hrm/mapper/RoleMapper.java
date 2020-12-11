@@ -42,4 +42,10 @@ public interface RoleMapper {
 
     @Delete("delete from sys_role where id = #{id}")
     int deleteById(Integer id);
+
+    @Select("select r.* from sys_role r " +
+            "inner join sys_role_user ru on ru.roleId = r.id " +
+            "left join sys_user u on u.id = ru.userId " +
+            "where u.id = #{id}")
+    List<Role> getRoleByUserId(Long id);
 }

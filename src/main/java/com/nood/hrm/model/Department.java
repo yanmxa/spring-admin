@@ -11,10 +11,10 @@ public class Department extends BaseEntity<Integer> {
 
     private String ancestors;
 
-    private String deptName;
+    private String deptName = "";
 
     private Integer sort;
 
-    private Integer status;
+    private Integer status = 1;
 
 }

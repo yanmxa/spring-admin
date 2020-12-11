@@ -1,6 +1,7 @@
 package com.nood.hrm.security.user;
 
 import com.nood.hrm.mapper.PermissionMapper;
+import com.nood.hrm.mapper.RoleMapper;
 import com.nood.hrm.model.User;
 import com.nood.hrm.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +22,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private PermissionMapper permissionMapper;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -34,8 +38,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         LoginUser loginUser = new LoginUser();
 
         BeanUtils.copyProperties(user, loginUser);
-        loginUser.setPermissions(permissionMapper.listByUserId(user.getId()));
 
+        loginUser.setPermissions(permissionMapper.listByUserId(user.getId()));
+        loginUser.setRoles(roleMapper.getRoleByUserId(user.getId()));
 
         return loginUser;
     }

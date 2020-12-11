@@ -8,7 +8,7 @@ public interface UserService {
 
     User getUser(String username);
 
-    Response<UserDto> getAllUserByPage(Integer offset, Integer limit);
+    Response<UserDto> getAllUserByPage(Integer offset, Integer limit, User user);
 
     Response<User> save(User user, Integer roleId);
 

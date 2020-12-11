@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -143,5 +144,42 @@ public class DepartmentController {
         return Response.success(ResponseCode.SUCCESS, departmentDtos);
     }
 
+
+//    @RequestMapping("/findSelective")
+//    @ResponseBody
+//    public Response<DepartmentDto> findSelective(
+//            @RequestParam(value="page", defaultValue="1")int pageNum,
+//            @RequestParam(value="limit", defaultValue="5") int limit,
+//            @RequestParam(value="departmentName", defaultValue="") String departmentName) throws Exception {
+//
+//        Department department = new Department();
+//        department.setDeptName(departmentName);
+//
+//        List<DepartmentDto> departmentDtoList = departmentService.getDeptAll(department).stream().map(e -> {
+//            DepartmentDto departmentDto = new DepartmentDto();
+//            departmentDto.setId(e.getId());
+//            departmentDto.setTitle(e.getDeptName());
+//            return departmentDto;
+//        }).collect(Collectors.toList());
+//
+////        //模糊查询，有多少个条件就接收多少个字段
+////        Department department = new Department();
+////        department.setId(departmentId);
+////
+////        //pageNum:起始页面  pageSize:每页的大小
+////        PageHelper.startPage(pageNum,limit);
+////        //查找条件，一定要紧跟在startPage后
+////        list = departmentService.findSelective(department);
+////        PageInfo pageResult = new PageInfo(list);
+////
+////        //设置前台需要的数据
+////        DepartmentPages departmentPages = new DepartmentPages();
+////        departmentPages.setCode(0);
+////        departmentPages.setMsg("");
+////        departmentPages.setCount((int) pageResult.getTotal());
+////        departmentPages.setData(pageResult.getList());
+////
+////        return departmentPages;
+//    }
 
 }
