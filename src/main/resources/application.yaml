@@ -33,6 +33,7 @@ spring:
     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 
+
   jackson:
     time-zone: GMT+8     #springboot默认用Jackson框架转换，Jackson默认时区是GMT, 对于中国时间少8小时
 
