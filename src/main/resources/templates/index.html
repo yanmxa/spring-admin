@@ -158,11 +158,10 @@
                 iconMap.set("系统管理", "&#xe770;");
                 iconMap.set("权限管理", "&#xe716;");
                 iconMap.set("薪酬管理", "&#xe63c;");
-                iconMap.set("数据源监控", "&#xe656;");
-                iconMap.set("接口swagger", "&#xe716;");
-                iconMap.set("代码生成", "&#xe716;");
-                iconMap.set("日志查询", "&#xe716;");
-
+                // iconMap.set("数据源监控", "&#xe656;");
+                // iconMap.set("接口swagger", "&#xe716;");
+                // iconMap.set("代码生成", "&#xe716;");
+                // iconMap.set("日志查询", "&#xe716;");
                 data.map(function (item, index) {
                     var isRoot = false;
                     if (item.parentId == 0) {
@@ -172,7 +171,9 @@
                     menuItemStr = menuItemStr.replace(/{{menu_name}}/, item.name);
                     if (isRoot) {
                         menuItemStr = menuItemStr.replace(/{{menu_right}}/, _this.menuItemRight);
-                        menuItemStr = menuItemStr.replace(/{{menu_icon}}/, iconMap.get(item.name));
+                        var icon = iconMap.get(item.name)
+                        if (icon == null || icon == undefined) icon = "&#xe63c"
+                        menuItemStr = menuItemStr.replace(/{{menu_icon}}/, icon);
 
                         // alert(iconMap.get(item.name))
                         // menuItemStr = menuItemStr.replace(/{{men_icon}}/, iconMap.get(item.name));

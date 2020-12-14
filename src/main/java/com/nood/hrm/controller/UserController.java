@@ -10,6 +10,9 @@ import com.nood.hrm.service.DepartmentService;
 import com.nood.hrm.service.UserService;
 import com.nood.hrm.util.MD5;
 import com.sun.org.apache.regexp.internal.RE;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,7 @@ import java.util.List;
 @Controller
 @RequestMapping("user")
 @Slf4j
+@Api(tags = "系统：用户管理")
 public class UserController {
 
     @Autowired
@@ -49,6 +53,8 @@ public class UserController {
     @GetMapping("/list")
     @ResponseBody
     @PreAuthorize("hasAuthority('sys:user:query')")
+    @ApiOperation(value="分页获取页面信息", notes = "分页获取用户信息注释")
+    @ApiImplicitParam(name = "tableRequest", value = "分页查询实体类", required = false)
     public Response<UserDto> getUsers(TableRequest tableRequest) {
 
         tableRequest.countOffset();
