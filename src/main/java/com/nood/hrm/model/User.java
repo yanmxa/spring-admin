@@ -14,7 +14,7 @@ public class User extends BaseEntity<Long> {
 
     public static final String defaultPassword = "123456";
 
-    private Integer no;
+    private String no;
     private Integer departmentId;
     private String username;
     private String password;

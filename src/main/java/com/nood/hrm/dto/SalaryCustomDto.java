@@ -1,6 +1,8 @@
 package com.nood.hrm.dto;
 
 import com.nood.hrm.model.BaseEntity;
+import com.nood.hrm.model.SalaryMeta;
+import com.nood.hrm.util.PinyinUtil;
 import lombok.Data;
 
 @Data
@@ -17,9 +19,12 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
 //    private Integer departmentId;
 
     // 用于和自动申城的薪资表进行关联
-    private String departmentNameAlias = "bu_men_ming_cheng";       // 用作权限控制
-    private String employeeNameAlias = "yuan_gong_ming_zi";
-    private String employeeNoAlias = "yuan_gong_bian_hao";          // 用作权限控制
-    private String dateAlias = "yue_fen";                           // 日期，用作数据过滤
+    public String departmentNameAlias = "bu_men";       // 用作权限控制
+    public String employeeNameAlias = "xing_ming";
+    public String employeeNoAlias = "gong_hao";          // 用作权限控制
+    public String dateAlias = "yue_fen";                           // 日期，用作数据过滤
+
+    public String shouldIncomeAlisa = "ying_fa_he_ji";
+    public String actualIncomeAlisa = "shi_fa_he_ji";
 
 }

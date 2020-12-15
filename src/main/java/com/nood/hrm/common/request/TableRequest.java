@@ -1,4 +1,4 @@
-package com.nood.hrm.base.request;
+package com.nood.hrm.common.request;
 
 import lombok.Data;
 

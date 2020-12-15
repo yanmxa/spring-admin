@@ -20,6 +20,8 @@ public class LoginUser extends User implements UserDetails {
 
     private List<Role> roles;
 
+    private String no;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return permissions.parallelStream()

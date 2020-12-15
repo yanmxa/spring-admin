@@ -1,6 +1,6 @@
 package com.nood.hrm.service;
 
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.model.User;
 
@@ -24,5 +24,5 @@ public interface UserService {
 
     Response<User> changePassword(String username, String oldPassword, String newPassword);
 
-    User getUserByNo(Integer no);
+    User getUserByNo(String no);
 }

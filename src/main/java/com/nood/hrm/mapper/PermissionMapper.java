@@ -1,6 +1,5 @@
 package com.nood.hrm.mapper;
 
-import com.nood.hrm.base.response.Response;
 import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.model.Permission;
 import org.apache.ibatis.annotations.*;

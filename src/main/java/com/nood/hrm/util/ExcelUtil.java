@@ -57,6 +57,7 @@ public class ExcelUtil {
         }
 
         Sheet sheet = workbook.createSheet(sheetName);
+        //设置行高、列宽为自适应（应用于整个工作表）
         int rowIndex = writeHeadsToExcel(workbook, sheet, data.getHeads());
         if (null != data && null != data.getRows()) {
             writeRowsToExcel(workbook, sheet, data.getRows(), rowIndex);
@@ -90,6 +91,7 @@ public class ExcelUtil {
             Cell cell = titleRow.createCell(colIndex);
             cell.setCellValue(field);
             cell.setCellStyle(titleStyle);
+            sheet.autoSizeColumn(colIndex);
             colIndex++;
         }
         rowIndex++;

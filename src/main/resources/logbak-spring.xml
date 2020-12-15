@@ -6,7 +6,7 @@
 <configuration  scan="true" scanPeriod="10 seconds">
 
     <!--<property name="log.path" value="D:/bmslog" />-->
-    <springProperty scope="context" name="log.path" source="logging.path" defaultValue="/Users/yanmeng/202/human-resousce-management/logs"/>
+    <springProperty scope="context" name="log.path" source="logging.path" defaultValue="./logs"/>
     <contextName>logback</contextName>
 
     <!-- 彩色日志 -->

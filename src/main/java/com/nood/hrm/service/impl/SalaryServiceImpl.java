@@ -1,6 +1,6 @@
 package com.nood.hrm.service.impl;
 
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.mapper.DepartmentMapper;
@@ -19,6 +19,7 @@ import com.nood.hrm.util.PinyinUtil;
 import com.nood.hrm.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -139,6 +140,8 @@ public class SalaryServiceImpl implements SalaryService {
     @Override
     public int deleteMetaBy(Integer id) {
 
+
+
         return deleteMeta(id, true);
 
 //        return salaryMetaMapper.deleteMetaById(id);
@@ -184,10 +187,12 @@ public class SalaryServiceImpl implements SalaryService {
                 Row row = sheet.getRow(rowNum);
                 if(row!=null) {
                     for(int cellNum = 0;cellNum < row.getLastCellNum();cellNum++){
-                        if (index2Numeric.get(cellNum) == 1)
+                        if (index2Numeric.get(cellNum) == 1) {
                             column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getNumericCellValue());
-                        else
+                        } else {
+                            row.getCell(cellNum).setCellType(Cell.CELL_TYPE_STRING);
                             column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getStringCellValue());
+                        }
                     }
 //                    System.out.println(column2record);
                     salaryMapper.insertWithMap(column2record);
@@ -213,11 +218,22 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public List<SalaryMetaDto> getSalaryTableHead() {
+        SalaryCustomDto salaryCustomDto = new SalaryCustomDto();
         List<SalaryMetaDto> headers = salaryMetaMapper.getAllMeta()
                 .stream()
                 .filter(e -> e.getStatus() == 1)
                 .sorted((o1, o2) -> o1.getSort().compareTo(o2.getSort()))
-                .map(e -> new SalaryMetaDto(PinyinUtil.hanziToPinyin(e.getName(), "_"), e.getName()))
+                .map(e -> {
+                    SalaryMetaDto salaryMetaDto = new SalaryMetaDto(PinyinUtil.hanziToPinyin(e.getName(), "_"), e.getName());
+
+                    if (salaryMetaDto.getField().equals(salaryCustomDto.employeeNameAlias)) {
+                        salaryMetaDto.setFixed("left");
+                    }
+                    if (salaryMetaDto.getField().equals(salaryCustomDto.actualIncomeAlisa)) {
+                        salaryMetaDto.setFixed("right");
+                    }
+                    return salaryMetaDto;
+                })
                 .collect(Collectors.toList());
         return headers;
     }
@@ -238,16 +254,24 @@ public class SalaryServiceImpl implements SalaryService {
                         String departmentName = (String) recordMap.get(salaryCustomDto.getDepartmentNameAlias());
                         return departmentNameSet.contains(departmentName);
                     } else {
-                        return SecurityUtil.getCurrentUser().getNo() == recordMap.get(salaryCustomDto.getEmployeeNoAlias());
+//                        System.out.println(" NO " + SecurityUtil.getCurrentUser().getNo() + " - " + recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
+                        return SecurityUtil.getCurrentUser().getNo().equals(recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
                     }
                 })
-//                .sorted((o1, o2) -> {
-//                    System.out.println(salaryCustomDto.getEmployeeNoAlias());
-//                    Integer s1 = Integer.valueOf((String) o1.getOrDefault(salaryCustomDto.getEmployeeNoAlias(), "0"));
-//                    Integer s2 = Integer.valueOf((String) o2.getOrDefault(salaryCustomDto.getEmployeeNoAlias(), "0"));
-//                    return s1.compareTo(s2);
-//                })
+                .sorted((o1, o2) -> {
+                    Integer s1 = Integer.valueOf(o1.getOrDefault(salaryCustomDto.employeeNoAlias, "0").toString());
+                    Integer s2 = Integer.valueOf(o2.getOrDefault(salaryCustomDto.employeeNoAlias, "0").toString());
+                    return s1.compareTo(s2);
+                })
                 .collect(Collectors.toList());
+
+//        Collections.sort(salaryByFilter, new Comparator<Map<String, Object>>() {
+//            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+//                Integer n1 = Integer.valueOf(o1.get(salaryCustomDto.employeeNoAlias).toString()) ;
+//                Integer n2 = Integer.valueOf(o2.get(salaryCustomDto.employeeNoAlias).toString()) ;
+//                return n1.compareTo(n2);
+//            }
+//        });
 
         // 1.3 根据List分页输出
         int count = salaryByFilter.size();
@@ -329,4 +353,6 @@ public class SalaryServiceImpl implements SalaryService {
         }
         return salaryMetaMapper.deleteMetaById(id);
     }
+
+
 }

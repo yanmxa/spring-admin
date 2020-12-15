@@ -1,8 +1,6 @@
 package com.nood.hrm.mapper;
 
-import com.nood.hrm.base.response.Response;
 import com.nood.hrm.model.Role;
-import oracle.jrockit.jfr.events.Bits;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 

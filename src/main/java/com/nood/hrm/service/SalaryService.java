@@ -1,6 +1,6 @@
 package com.nood.hrm.service;
 
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.model.SalaryMeta;

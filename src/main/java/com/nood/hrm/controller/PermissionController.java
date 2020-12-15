@@ -2,12 +2,15 @@ package com.nood.hrm.controller;
 
 import com.alibaba.fastjson.JSONArray;
 
-import com.nood.hrm.base.response.Response;
-import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.common.logger.aop.Log;
+import com.nood.hrm.common.response.Response;
+import com.nood.hrm.common.response.ResponseCode;
 import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.dto.RoleDto;
 import com.nood.hrm.model.Permission;
 import com.nood.hrm.service.PermissionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping("permission")
 @Slf4j
+@Api(tags = "系统：权限管理")
 public class PermissionController {
     @Autowired
     private PermissionService permissionService;
@@ -26,6 +30,7 @@ public class PermissionController {
 
     @GetMapping("/build")
     @ResponseBody
+    @ApiOperation(value = "根据角色id获取菜单列表")
     public Response<List<MenuDto>> buildTreeByRoleId(String roleId) {
 
 
@@ -48,7 +53,7 @@ public class PermissionController {
     @RequestMapping(value = "/listAllPermission", method = RequestMethod.GET)
     @ResponseBody
 //    @PreAuthorize("hasAuthority('sys:menu:query')")
-//    @ApiOperation(value = "获取所有权限值", notes = "获取所有菜单的权限值")//描述
+    @ApiOperation(value = "获取所有权限值", notes = "获取所有菜单的权限值")//描述
     public Response<JSONArray> listAllPermission() {
         return permissionService.listAllPermission();
     }
@@ -56,7 +61,7 @@ public class PermissionController {
 
     @RequestMapping(value = "/listAllPermissionByRoleId", method = RequestMethod.GET)
     @ResponseBody
-//    @ApiOperation(value = "获取角色权限", notes = "根据角色Id去查询拥有的权限")//描述
+    @ApiOperation(value = "获取角色权限", notes = "根据角色Id去查询拥有的权限")//描述
     public Response<Permission> listAllPermissionByRoleId(RoleDto roleDto) {
         return permissionService.listByRoleId(roleDto.getId().intValue());
     }
@@ -64,7 +69,7 @@ public class PermissionController {
 
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     @ResponseBody
-//    @ApiOperation(value = "获取菜单", notes = "获取用户所属角色下能显示的菜单")//描述
+    @ApiOperation(value = "获取菜单", notes = "获取用户所属角色下能显示的菜单")//描述
 //    @ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
     public Response<Permission> getMenu(Long userId) {
         return permissionService.getMenu(userId);
@@ -84,6 +89,8 @@ public class PermissionController {
 
     @PostMapping(value = "/add")
     @ResponseBody
+    @ApiOperation(value = "保存添加权限")//描述
+    @Log("添加权限")
     public Response<Permission> savePermission(@RequestBody Permission permission) {
         return permissionService.save(permission);
     }
@@ -96,12 +103,16 @@ public class PermissionController {
 
     @PostMapping(value = "/edit")
     @ResponseBody
+    @ApiOperation(value = "更新权限")//描述
+    @Log("更新权限")
     public Response<Permission> updatePermission(@RequestBody Permission permission) {
         return permissionService.updatePermission(permission);
     }
 
     @GetMapping(value = "/delete")
     @ResponseBody
+    @ApiOperation(value = "删除权限")//描述
+    @Log("删除权限")
     public Response<Permission> deletePermission(Permission permission) {
         return permissionService.deleteById(permission.getId());
     }

@@ -1,15 +1,13 @@
 package com.nood.hrm.controller;
 
-import com.nood.hrm.base.request.TableRequest;
-import com.nood.hrm.base.response.Response;
-import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.common.logger.aop.Log;
+import com.nood.hrm.common.request.TableRequest;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.model.Department;
 import com.nood.hrm.model.User;
 import com.nood.hrm.service.DepartmentService;
 import com.nood.hrm.service.UserService;
-import com.nood.hrm.util.MD5;
-import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -18,14 +16,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +48,7 @@ public class UserController {
 
     @GetMapping("/list")
     @ResponseBody
-    @PreAuthorize("hasAuthority('sys:user:query')")
+//    @PreAuthorize("hasAuthority('sys:user:query')")
     @ApiOperation(value="分页获取页面信息", notes = "分页获取用户信息注释")
     @ApiImplicitParam(name = "tableRequest", value = "分页查询实体类", required = false)
     public Response<UserDto> getUsers(TableRequest tableRequest) {
@@ -63,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/add")
-    @PreAuthorize("hasAuthority('sys:user:add')")
+//    @PreAuthorize("hasAuthority('sys:user:add')")
     public String addUser(Model model) {
         model.addAttribute("user",new UserDto());
         return "user/user-add";
@@ -71,7 +67,9 @@ public class UserController {
 
     @PostMapping(value = "/add")
     @ResponseBody
-    @PreAuthorize("hasAuthority('sys:user:add')")
+    @ApiOperation(value="添加用户", notes = "添加用户")
+    @Log("添加用户")
+//    @PreAuthorize("hasAuthority('sys:user:add')")
     public Response<User> saveUser(UserDto userDto, Integer roleId) {
 
 
@@ -99,6 +97,8 @@ public class UserController {
 
     @PostMapping(value = "/edit")
     @ResponseBody
+    @ApiOperation(value="更新用户", notes = "更新用户")
+    @Log("更新用户")
     public Response<User> updateUser(UserDto userDto, Integer roleId) {
 
         return userService.updateUser(userDto, roleId);
@@ -106,6 +106,8 @@ public class UserController {
 
     @GetMapping(value = "/delete")
     @ResponseBody
+    @ApiOperation(value="删除用户")
+    @Log("删除用户")
     public Response deleteUser(UserDto userDto) {
         int count = userService.deleteUserById(userDto.getId());
         if (count > 0) return Response.success();
@@ -114,6 +116,8 @@ public class UserController {
 
     @RequestMapping(value = "/deleteByIdList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="批量删除用户")
+    @Log("批量删除用户")
     public Response DeleteByIdList(@RequestParam("idList") List<Integer> idList) {
         for (Integer id : idList) {
             int count = userService.deleteUserById(id.longValue());
@@ -135,6 +139,7 @@ public class UserController {
 
     @PostMapping("/changePassword")
     @ResponseBody
+    @Log("修改用户密码")
     public Response<User> changePassword(String username, String oldPassword, String newPassword) {
         return userService.changePassword(username, oldPassword, newPassword);
     }

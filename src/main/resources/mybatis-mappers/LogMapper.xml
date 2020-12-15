@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nood.hrm.mapper.LogMapper">
+    <select id="getFuzzyLogByPage" resultType="com.nood.hrm.dto.dto4log.LogDto">
+        SELECT l.username,l.ip,l.params,l.description,l.browser,l.time,l.method, l.createTime
+        FROM sys_log l
+        <where>
+            <if test="logQuery.logType != null and logQuery.logType  != ''">
+                AND l.type = #{logQuery.logType}
+            </if>
+            <if test="logQuery.userName != null and logQuery.userName != ''">
+                AND l.username like CONCAT('%', #{logQuery.userName}, '%')
+            </if>
+        </where>
+        ORDER BY l.createTime desc
+        limit #{startPosition}, #{limit}
+    </select>
+
+    <select id="getFuzzyErrorLogByPage" resultType="com.nood.hrm.dto.dto4log.ErrorLogDto">
+        SELECT l.username,l.ip,l.params,l.description,l.browser,l.exceptionDetail,l.method,l.createTime
+        FROM sys_log l
+        <where>
+            <if test="logQuery.logType != null and logQuery.logType  != ''">
+                AND l.type = #{logQuery.logType}
+            </if>
+            <if test="logQuery.userName != null and logQuery.userName != ''">
+                AND l.username like CONCAT('%', #{logQuery.userName}, '%')
+            </if>
+        </where>
+        ORDER BY l.createTime desc
+        limit #{startPosition}, #{limit}
+    </select>
+
+
+
+    <select id="getFuzzyLogCount" resultType="Integer">
+        SELECT count(*)
+        FROM sys_log l
+        <where>
+            <if test="logQuery.logType != null and logQuery.logType  != ''">
+                AND l.type = #{logQuery.logType}
+            </if>
+            <if test="logQuery.userName != null and logQuery.userName != ''">
+                AND l.username like CONCAT('%', #{logQuery.userName}, '%')
+            </if>
+        </where>
+        ORDER BY l.createTime desc
+    </select>
+</mapper>

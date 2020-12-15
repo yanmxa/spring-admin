@@ -1,6 +1,6 @@
 package com.nood.hrm.service.impl;
 
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.UserDto;
 import com.nood.hrm.mapper.RoleMapper;
 import com.nood.hrm.mapper.RoleUserMapper;
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByNo(Integer no) {
+    public User getUserByNo(String no) {
         return userMapper.getUserByNo(no);
     }
 }

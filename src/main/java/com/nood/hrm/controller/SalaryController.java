@@ -1,11 +1,15 @@
 package com.nood.hrm.controller;
 
-import com.nood.hrm.base.request.TableRequest;
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.logger.aop.Log;
+import com.nood.hrm.common.request.TableRequest;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.model.SalaryMeta;
 import com.nood.hrm.service.SalaryService;
+import com.nood.hrm.util.PinyinUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +29,7 @@ import java.util.List;
 @Controller
 @RequestMapping("salary")
 @Slf4j
+@Api(tags = "系统：薪酬管理")
 public class SalaryController {
 
     @Qualifier("salaryServiceImpl")
@@ -42,13 +47,17 @@ public class SalaryController {
 //    @PreAuthorize("hasAuthority('sys:user:add')")
     public String addMeta(Model model) {
         model.addAttribute("salaryMeta", new SalaryMeta());
+
         return "salary/salaryMeta-add";
     }
 
     @PostMapping(value = "/addMeta")
     @ResponseBody
 //    @PreAuthorize("hasAuthority('sys:user:add')")
+    @ApiOperation(value="添加字段")
+    @Log("添加字段")
     public Response<SalaryMeta> saveMeta(SalaryMeta salaryMeta) {
+        if (cannotUpdate(salaryMeta)) return Response.failure("该字段不可添加、更新及删除!");
         return salaryService.saveMeta(salaryMeta);
     }
 
@@ -61,7 +70,10 @@ public class SalaryController {
     @PostMapping(value = "/updateMeta")
     @ResponseBody
 //    @PreAuthorize("hasAuthority('sys:user:add')")
+    @ApiOperation(value="更新字段")
+    @Log("更新字段")
     public Response<SalaryMeta> updateMeta(SalaryMeta salaryMeta) {
+        if (cannotUpdate(salaryMeta)) return Response.failure("该字段不可添加、更新及删除!");
         return salaryService.updateMeta(salaryMeta);
     }
 
@@ -74,6 +86,8 @@ public class SalaryController {
 
     @RequestMapping(value = "/downloadSalaryMeta", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="下载薪酬数据模板")
+    @Log("下载薪酬数据模板")
     public void downloadSalaryMeta(HttpServletResponse response) {
         salaryService.downLoadSalaryMeta(response);
     }
@@ -92,8 +106,14 @@ public class SalaryController {
 //
     @GetMapping(value = "/deleteMeta")
     @ResponseBody
+    @ApiOperation(value="删除薪酬字段")
+    @Log("删除薪酬字段")
     public Response deleteMeta(SalaryMeta salaryMeta) {
 //        int count = salaryService.deleteMeta(salaryMeta, true);
+
+
+        if (cannotUpdate(salaryMeta.getId())) return Response.failure("该字段不可添加、更新及删除!");
+
         int count = salaryService.deleteMetaBy(salaryMeta.getId());
         if (count > 0) return Response.success();
         else return Response.failure();
@@ -101,8 +121,13 @@ public class SalaryController {
 
     @RequestMapping(value = "/deleteByIdList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="批量删除薪酬字段")
+    @Log("批量删除薪酬字段")
     public Response DeleteMetaByIdList(@RequestParam("idList") List<Integer> idList) {
         for (Integer id : idList) {
+
+            if (cannotUpdate(id)) return Response.failure("该字段不可添加、更新及删除!");
+
             int count = salaryService.deleteMetaBy(id);
             if (count < 0) return Response.failure("删除失败");
         }
@@ -148,6 +173,32 @@ public class SalaryController {
             if (count < 0) return Response.failure("删除失败");
         }
         return Response.success();
+    }
+
+
+    private boolean cannotUpdate(SalaryMeta salaryMeta) {
+        String columnName = PinyinUtil.hanziToPinyin(salaryMeta.getName(), "_");
+        SalaryCustomDto salaryCustomDto = new SalaryCustomDto();
+        if (columnName.equals(salaryCustomDto.departmentNameAlias) ||
+                columnName.equals(salaryCustomDto.dateAlias) ||
+                columnName.equals(salaryCustomDto.employeeNameAlias) ||
+                columnName.equals(salaryCustomDto.employeeNoAlias)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean cannotUpdate(Integer metaId) {
+        SalaryMeta salaryMeta = salaryService.getById(metaId);
+        String columnName = PinyinUtil.hanziToPinyin(salaryMeta.getName(), "_");
+        SalaryCustomDto salaryCustomDto = new SalaryCustomDto();
+        if (columnName.equals(salaryCustomDto.departmentNameAlias) ||
+                columnName.equals(salaryCustomDto.dateAlias) ||
+                columnName.equals(salaryCustomDto.employeeNameAlias) ||
+                columnName.equals(salaryCustomDto.employeeNoAlias)) {
+            return true;
+        }
+        return false;
     }
 
 }

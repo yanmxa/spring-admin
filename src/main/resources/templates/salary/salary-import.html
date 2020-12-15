@@ -58,7 +58,8 @@
             }
             ,done: function (data) {
                 if(data.code == 500 || data.code == 5000100 || data.code == 5000101 || data.code == 5000102){
-                    layer.alert(data.msg);
+                    layer.msg(data.msg, {icon: 2, time: 10000, offset: 'rt'});
+                    // layer.alert("上传错误");
                 } else {
 
                     var n = 0, timer = setInterval(function(){
@@ -74,7 +75,7 @@
                 }
             }
             ,error: function (data) {
-                layer.msg(data.msg, {icon: 5, time: 2000, offset: 'rt'});
+                layer.msg(data.msg, {icon: 5, time: 10000, offset: 'rt'});
             }
         });
     })
@@ -123,6 +124,23 @@
     layui.use('table', function(){
         var table = layui.table,
             form = layui.form;
+
+        var columns = [ //表头
+            {type:   'checkbox', fixed: 'left'}
+            ,{field: 'id', title: 'ID', align:'center', width:50}
+            ,{field: 'name', title: '薪酬字段'}
+            ,{field: 'type', title: '分类'}
+            ,{field: 'property', title: '性质'}
+            ,{field: 'detail', title: '描述'}
+            ,{field: 'status', title: '状态',  templet:function(d){
+                    return  d.status == '1' ? "启动":"禁用";
+                }}
+            ,{field: 'isDecimal', title: '是否数值',  templet:function(d){
+                    return  d.isDecimal == '1' ? "是":"否";
+                }}
+            ,{field: 'sort', title: '排序'}
+            ,{title:'操作', toolbar: '#barButtons',align:'center'}
+        ];
         table.render({
             elem: '#table'
             ,url: '/salary/listMeta' //数据接口
@@ -133,22 +151,7 @@
             }
             ,cellMinWidth: 100
             ,cols: [
-                [ //表头
-                    {type:   'checkbox', fixed: 'left'}
-                    ,{field: 'id', title: 'ID', align:'center', width:50}
-                    ,{field: 'name', title: '薪酬字段'}
-                    ,{field: 'type', title: '分类'}
-                    ,{field: 'property', title: '性质'}
-                    ,{field: 'detail', title: '描述'}
-                    ,{field: 'status', title: '状态',  templet:function(d){
-                        return  d.status == '1' ? "启动":"禁用";
-                    }}
-                    ,{field: 'isDecimal', title: '是否数值',  templet:function(d){
-                        return  d.isDecimal == '1' ? "是":"否";
-                    }}
-                    ,{field: 'sort', title: '排序'}
-                    ,{title:'操作', toolbar: '#barButtons',align:'center'}
-                ]
+                columns
             ],
             done: function(){
                 // checkPermission()
@@ -203,21 +206,22 @@
                     dataName: 'datas' //规定数据列表的字段名称，默认：data
                 }
                 ,cols: [
-                    [ //表头
-                        {type:   'checkbox', fixed: 'left'}
-                        ,{field: 'id', title: 'ID', align:'center', width:50}
-                        ,{field: 'name', title: '薪酬字段'}
-                        ,{field: 'type', title: '分类'}
-                        ,{field: 'property', title: '性质'}
-                        ,{field: 'detail', title: '描述'}
-                        ,{field: 'status', title: '状态',  templet:function(d){
-                            return  d.status == '1' ? "启动":"禁用";
-                        }}
-                        ,{field: 'isDecimal', title: '是否数值',  templet:function(d){
-                            return  d.isDecimal == '1' ? "是":"否";
-                        }}
-                        ,{title:'操作', toolbar: '#barButtons',align:'center'}
-                    ]
+                    // [ //表头
+                    //     {type:   'checkbox', fixed: 'left'}
+                    //     ,{field: 'id', title: 'ID', align:'center', width:50}
+                    //     ,{field: 'name', title: '薪酬字段'}
+                    //     ,{field: 'type', title: '分类'}
+                    //     ,{field: 'property', title: '性质'}
+                    //     ,{field: 'detail', title: '描述'}
+                    //     ,{field: 'status', title: '状态',  templet:function(d){
+                    //         return  d.status == '1' ? "启动":"禁用";
+                    //     }}
+                    //     ,{field: 'isDecimal', title: '是否数值',  templet:function(d){
+                    //         return  d.isDecimal == '1' ? "是":"否";
+                    //     }}
+                    //     ,{title:'操作', toolbar: '#barButtons',align:'center'}
+                    // ]
+                    columns
                 ]
             });
             return false;

@@ -1,4 +1,4 @@
-package com.nood.hrm.base.response;
+package com.nood.hrm.common.response;
 
 public enum ResponseCode {
 

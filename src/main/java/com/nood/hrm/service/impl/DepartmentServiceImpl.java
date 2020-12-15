@@ -1,6 +1,6 @@
 package com.nood.hrm.service.impl;
 
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.DepartmentDto;
 import com.nood.hrm.mapper.DepartmentMapper;
 import com.nood.hrm.model.Department;

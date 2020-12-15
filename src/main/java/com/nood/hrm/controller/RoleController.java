@@ -1,23 +1,23 @@
 package com.nood.hrm.controller;
 
-import com.nood.hrm.base.request.TableRequest;
-import com.nood.hrm.base.response.Response;
-import com.nood.hrm.base.response.ResponseCode;
-import com.nood.hrm.dto.MenuDto;
+import com.nood.hrm.common.logger.aop.Log;
+import com.nood.hrm.common.request.TableRequest;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.RoleDto;
 import com.nood.hrm.model.Role;
 import com.nood.hrm.service.RoleService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("role")
 @Slf4j
+@Api(tags = "系统：角色管理")
 public class RoleController {
 
     @Autowired
@@ -42,6 +42,8 @@ public class RoleController {
 
     @GetMapping("/findRoleByFuzzyRoleName")
     @ResponseBody
+    @ApiOperation(value = "角色名称模糊查询")//描述
+    @Log("角色名称模糊查询")
     public Response<Role> findRoleByFuzzyRoleName(TableRequest tableRequest, @RequestParam("roleName") String name) {
 
         tableRequest.countOffset();
@@ -56,6 +58,8 @@ public class RoleController {
 
     @PostMapping(value = "/add")
     @ResponseBody
+    @ApiOperation(value = "保存角色")//描述
+    @Log("保存角色")
     public Response<Role> saveRole(@RequestBody RoleDto roleDto) {
         log.info(roleDto.getId() + " " + roleDto.getName()+ " - " + roleDto.getDescription() + " " + roleDto.getPermissionIds());
         return roleService.save(roleDto);
@@ -69,6 +73,8 @@ public class RoleController {
 
     @PostMapping(value = "/update")
     @ResponseBody
+    @ApiOperation(value = "更新角色")//描述
+    @Log("更新角色")
     public Response updateRole(@RequestBody RoleDto roleDto) {
         return roleService.update(roleDto);
     }
@@ -76,9 +82,9 @@ public class RoleController {
     @GetMapping(value = "/delete")
     @ResponseBody
 //    @PreAuthorize("hasAuthority('sys:role:del')")
-//    @ApiOperation(value = "删除角色信息", notes = "删除角色信息")//描述
+    @ApiOperation(value = "删除角色信息", notes = "删除角色信息")//描述
+    @Log("删除角色")
     public Response<Role> deleteRole(RoleDto roleDto) {
-        log.info("role id " + roleDto.getId());
         return roleService.delete(roleDto.getId());
     }
 
@@ -90,7 +96,8 @@ public class RoleController {
 
     @PutMapping(value = "/authDataScope")
     @ResponseBody
-//    @ApiOperation(value = "修改角色数据权限")
+    @ApiOperation(value = "修改角色数据权限")
+    @Log("修改角色权限")
     public Response uthDataScope(@RequestBody RoleDto roleDto) {
 
         return roleService.authDataScope(roleDto);

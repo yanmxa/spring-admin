@@ -1,7 +1,7 @@
 package com.nood.hrm.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.nood.hrm.base.response.Response;
+import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.MenuDto;
 import com.nood.hrm.model.Permission;
 

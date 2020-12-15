@@ -73,5 +73,5 @@ public interface UserMapper {
                                       @Param("user") User user);
 
     @Select("select * from sys_user t where t.no = #{no}")
-    User getUserByNo(Integer no);
+    User getUserByNo(String no);
 }

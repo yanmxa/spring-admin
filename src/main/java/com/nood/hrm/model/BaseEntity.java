@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Data
 public abstract class BaseEntity<ID extends Serializable> implements Serializable {
-    private static final long serialVersionUID = 8925514045582235838L;
+//    private static final long serialVersionUID = 8925514045582235838L;
     private ID id;
     private Date createTime = new Date();
     @JsonFormat(pattern = "yyyy-MM-dd  HH:mm:ss")

@@ -1,7 +1,7 @@
 package com.nood.hrm.util;
 
 
-import com.nood.hrm.base.response.ResponseCode;
+import com.nood.hrm.common.response.ResponseCode;
 import com.nood.hrm.security.user.LoginUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

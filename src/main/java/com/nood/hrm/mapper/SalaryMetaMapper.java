@@ -3,7 +3,6 @@ package com.nood.hrm.mapper;
 import com.nood.hrm.model.SalaryMeta;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
-import sun.jvm.hotspot.runtime.PerfDataEntry;
 
 import java.util.List;
 
