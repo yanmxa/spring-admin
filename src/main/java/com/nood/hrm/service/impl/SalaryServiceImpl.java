@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -232,6 +233,7 @@ public class SalaryServiceImpl implements SalaryService {
                     if (salaryMetaDto.getField().equals(salaryCustomDto.actualIncomeAlisa)) {
                         salaryMetaDto.setFixed("right");
                     }
+
                     return salaryMetaDto;
                 })
                 .collect(Collectors.toList());
@@ -244,7 +246,8 @@ public class SalaryServiceImpl implements SalaryService {
 
 
         // 1.1 根据salaryConditionDto先筛选出一批数据
-        List<Map<String, Object>> salaryByFuzzyName = getSalaryByFuzzyName(salaryCustomDto);
+        List<Map<String, Object>> salaryByFuzzyName = getSalaryGroupByNo(salaryCustomDto);
+
 
         // 1.2 从loginUser中获取 DepartmentSet 过滤后，排序，返回一个List
         Set<String> departmentNameSet = getDepartmentNamePermission();
@@ -265,6 +268,46 @@ public class SalaryServiceImpl implements SalaryService {
                 })
                 .collect(Collectors.toList());
 
+        // 如果没有月份，则添加月平均工资的记录项
+        if (salaryByFilter.size() > 0) {
+            List<Map<String, Object>> onePerson = salaryMapper.getSalaryByNoAndYearAndMonth(
+                    salaryCustomDto,
+                    (String) salaryByFilter.get(0).get(salaryCustomDto.getEmployeeNoAlias()));
+//            int monthCount = onePerson.size();
+            Set<String> monthSet = onePerson.stream().map(e -> e.get(salaryCustomDto.getDateAlias()).toString().split("-")[1]).collect(Collectors.toSet());
+
+            Set<String> decimalColumns = getDecimalColumns();
+
+            Map<String, Object> averageRecord = new HashMap<>();
+            averageRecord.put(salaryCustomDto.getEmployeeNameAlias(), "平均工资");
+
+            Set<String> departmentSet = new HashSet<>();
+            salaryByFilter.forEach(record -> {
+                for (String column : record.keySet()) {
+                    if (decimalColumns.contains(column)) {
+                        BigDecimal currentValue = (BigDecimal) record.getOrDefault(column, new BigDecimal(0.0));
+                        BigDecimal originalValue = (BigDecimal) averageRecord.getOrDefault(column, new BigDecimal(0.0));
+                        averageRecord.put(column, originalValue.add(currentValue));
+                    }
+                    departmentSet.add(record.get(salaryCustomDto.getDepartmentNameAlias()).toString());
+                }
+            });
+
+            for (String col : averageRecord.keySet()) {
+                if (decimalColumns.contains(col)) {
+                    BigDecimal originalValue = (BigDecimal) averageRecord.getOrDefault(col, new BigDecimal(0.0));
+                    averageRecord.put(col, originalValue.divide(new BigDecimal(salaryByFilter.size())));
+                }
+            }
+
+            averageRecord.put(salaryCustomDto.getDepartmentNameAlias(), departmentSet.toString());
+            averageRecord.put(salaryCustomDto.getDateAlias(), monthSet.toString());
+            salaryByFilter.add(averageRecord);
+        }
+
+
+
+
 //        Collections.sort(salaryByFilter, new Comparator<Map<String, Object>>() {
 //            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
 //                Integer n1 = Integer.valueOf(o1.get(salaryCustomDto.employeeNoAlias).toString()) ;
@@ -280,13 +323,106 @@ public class SalaryServiceImpl implements SalaryService {
         Response response = Response.success(count, salaryByFilter.subList(fromIndex, toIndex));
 
 
-        // 2. todo 方案二 将 salary表 和 sys_department 表做内关联即可, 再讲 BaseEntity的param.dataScope对应的sql注入mapper即可
-        // 2. todo 方案三 重新声明一个注解，这个注解可以可以根据当前用户的 role 获取取当前用户可以查看的部门名称 Set, where condition
+        // 2. 方案二 将 salary表 和 sys_department 表做内关联即可, 再讲 BaseEntity的param.dataScope对应的sql注入mapper即可
+        // 2. 方案三 重新声明一个注解，这个注解可以可以根据当前用户的 role 获取取当前用户可以查看的部门名称 Set, where condition
         // where 1=1 and bu_men_ming_cheng in ("一部", "二部"， "三部") -> 根据role获得
         // and no in = '张三'
 //        List<Map<String, Object>> datas = salaryMapper.getAllSalaryByPage(offset, limit, columns);
 
          return response;
+    }
+
+    private List<Map<String,Object>> getSalaryGroupByNo(SalaryCustomDto salaryCustomDto) {
+        List<Map<String,Object>> salaryByFuzzyName = null;
+
+        List<String> columns = getActiveColumns();
+
+        if (salaryCustomDto.getMonth() != null && !"".equals(salaryCustomDto.getMonth())) {
+            // 精准查询条件，根据年月查询
+            salaryCustomDto.setDate(salaryCustomDto.getYear()+"-"+salaryCustomDto.getMonth());
+            salaryByFuzzyName = salaryMapper.getSalaryByFuzzyNameAndYearAndMonth(columns, salaryCustomDto);
+
+        } else {
+            // 如果没有书输入月份，则按照月份聚合年度数据
+            salaryByFuzzyName = salaryMapper.getSalaryByFuzzyNameAndYear(columns, salaryCustomDto);
+            // TODO 聚合并添加平均值，（根据工号和年月份）
+            List<Map<String,Object>> aggregationRecords = aggregationByYear(salaryCustomDto, columns, salaryByFuzzyName);
+            salaryByFuzzyName = aggregationRecords;
+        }
+
+
+//        salaryByFuzzyName.stream().map()
+
+        return salaryByFuzzyName;
+    }
+
+    /**
+     * 根据年份对每个用户的数据进行聚合
+     * @param salaryCustomDto
+     * @param columns
+     * @param salaryByFuzzyName
+     */
+    private List<Map<String,Object>> aggregationByYear(SalaryCustomDto salaryCustomDto, List<String> columns, List<Map<String,Object>> salaryByFuzzyName) {
+        String year = salaryCustomDto.getYear();
+        String employeeNo = salaryCustomDto.getEmployeeNoAlias();
+        String salaryDate = salaryCustomDto.getDateAlias();    // 设置月份为年
+        Set<String> decimalColumns = getDecimalColumns();
+
+        // 员工工号 与 记录建立哈希表，根据员工工号进行聚合
+        Map<String, Map<String, Object>>  employeeNo2RecordMap = new HashMap<>();
+        for (Map<String, Object> record : salaryByFuzzyName) {
+
+            String no = record.get(employeeNo).toString();
+
+            if (employeeNo2RecordMap.containsKey(no)) {
+                Map<String, Object> originalRecord = employeeNo2RecordMap.get(no);
+                decimalColumnsAdd(originalRecord, record, decimalColumns);
+
+            } else {
+                employeeNo2RecordMap.put(no, record);
+
+            }
+            Map<String, Object> realRecord = employeeNo2RecordMap.get(no);
+            realRecord.put(salaryDate, year);
+        }
+
+        List<Map<String, Object>> aggregationRecords = employeeNo2RecordMap.values().stream().collect(Collectors.toList());
+
+        return aggregationRecords;
+    }
+
+    /**
+     * 将数值型的工资项聚合到originalRecord
+     * @param originalRecord
+     * @param record
+     * @param decimalColumns
+     */
+    private void decimalColumnsAdd(Map<String,Object> originalRecord, Map<String,Object> record, Set<String> decimalColumns) {
+        for (String column : decimalColumns) {
+            java.math.BigDecimal originalValue = (java.math.BigDecimal) originalRecord.get(column);
+            java.math.BigDecimal currentValue = (java.math.BigDecimal) record.get(column);
+            originalRecord.put(column, originalValue.add(currentValue));
+        }
+    }
+
+    private Set<String> getDecimalColumns() {
+        Set<String> columns = salaryMetaMapper.getAllMeta()
+                .stream()
+                .filter(e -> (e.getStatus() == 1) && (e.getIsDecimal() == 1)) // 只过滤有效数据
+                .map(e -> PinyinUtil.hanziToPinyin(e.getName(), "_"))
+                .collect(Collectors.toSet());
+//        if (columns != null && columns.size() > 0) columns.add(0, "id");
+        return columns;
+    }
+
+    private List<String> getActiveColumns() {
+        List<String> columns = salaryMetaMapper.getAllMeta()
+                .stream()
+                .filter(e -> e.getStatus() == 1) // 只过滤有效数据
+                .map(e -> PinyinUtil.hanziToPinyin(e.getName(), "_"))
+                .collect(Collectors.toList());
+        if (columns != null && columns.size() > 0) columns.add(0, "id");
+        return columns;
     }
 
     /**
@@ -323,21 +459,6 @@ public class SalaryServiceImpl implements SalaryService {
         return departmentList.stream().map(e -> e.getDeptName()).collect(Collectors.toSet());
     }
 
-    /**
-     * 根据前端页面获取薪水信息
-     * @param salaryCustomDto
-     * @return
-     */
-    private List<Map<String,Object>> getSalaryByFuzzyName(SalaryCustomDto salaryCustomDto) {
-        List<String> columns = salaryMetaMapper.getAllMeta()
-                .stream()
-                .map(e -> PinyinUtil.hanziToPinyin(e.getName(), "_"))
-                .collect(Collectors.toList());
-        if (columns != null && columns.size() > 0) columns.add(0, "id");
-
-        List<Map<String, Object>> salaryByFuzzyName = salaryMapper.getSalaryByFuzzyName(columns, salaryCustomDto);
-        return salaryByFuzzyName;
-    }
 
 
     @Override

@@ -37,9 +37,13 @@
                     <!--&lt;!&ndash;</select>&ndash;&gt;-->
                 <!--</div>-->
             <!--</div>&nbsp;&nbsp;&nbsp;&nbsp;-->
-            月份：
+            <!--月份：-->
             <div class="layui-inline">
-                <input name="date" id="dateId" lay-verify="date" autocomplete="off" class="layui-input" type="text" readonly>
+                <!--<input name="date" id="dateId" lay-verify="date" autocomplete="off" class="layui-input" type="text" readonly>-->
+                <input name="date" id="yearId" lay-verify="date" autocomplete="off" style="width: 60px;" class="layui-input" type="text" readonly>
+            </div>
+            <div class="layui-inline" style="margin-left: -10px">
+                <input name="date" id="monthId" lay-verify="date" autocomplete="off" style="width: 40px; text-align: center; padding-left: 0px" class="layui-input" type="text" placeholder="月份" readonly>
             </div>
             <div class="layui-inline" style="width: 20%;">
                 <input class="layui-input" name="name" id="nameId" autocomplete="off" placeholder="请输入部门或姓名">
@@ -47,8 +51,8 @@
 
             <button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
             <div class="layui-inline layui-btn-group" style="float: right;">
-                <button class="layui-btn" id="deleteCheckedId" permission="sys:user:del"><i class="layui-icon"></i>批量删除</button>
-                <button class="layui-btn"  id="downloadId" ><i class="layui-icon">&#xe601;</i>下载数据</button>
+                <button class="layui-btn" id="deleteCheckedId" permission="biz:salary:del"><i class="layui-icon"></i>批量删除</button>
+                <!--<button class="layui-btn"  id="downloadId" ><i class="layui-icon">&#xe601;</i>下载数据</button>-->
             </div>
     </div>
 
@@ -77,6 +81,8 @@
     : '' }}>
 </script>
 <script>
+
+    checkPermission();
 
     //ajax获取表头 head_ids 表头对应的ID
     function  getSalaryTableHead() {
@@ -124,11 +130,22 @@
 
         //年月范围
         laydate.render({
-            elem: '#dateId', //指定元素
+            elem: '#yearId', //指定元素
+            type: 'year',
+            // type: 'month',
+            // type: 'datetime', // 可选择：年、月、日、时、分、秒
+            format: 'yyyy', //指定时间格式
+            value: new Date(), // 指定值
+            trigger: 'click',
+        });
+        laydate.render({
+            elem: '#monthId', //指定元素
             type: 'month',
             // type: 'datetime', // 可选择：年、月、日、时、分、秒
-            // format: 'yyyy-MM-dd HH:mm:ss', //指定时间格式
-            value: new Date(), // 指定值
+            format: 'MM', //指定时间格式
+            // value: new Date(), // 指定值
+            // showBottom: false, //关闭底部框 去掉取消、确定、清空按钮
+            trigger: 'click',
         });
 
         // 初始化树
@@ -168,7 +185,8 @@
                 name : $('#nameId').val(),
                 // departmentId : $('#departmentIdId').val(),
                 // departmentName : $('#departmentNameId').val(),
-                date : $('#dateId').val()
+                month : $('#monthId').val(),
+                year : $('#yearId').val(),
             }
             return conditionData
         }
@@ -256,6 +274,8 @@
                 // layer.close(index);
             });
         });
+        checkPermission();
+
     });
 
 </script>

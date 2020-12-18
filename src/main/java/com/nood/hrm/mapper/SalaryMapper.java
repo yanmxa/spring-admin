@@ -45,6 +45,13 @@ public interface SalaryMapper {
     @Delete("delete from salary where id = #{id}")
     int deleteById(long id);
 
-    List<Map<String,Object>> getSalaryByFuzzyName(@Param("columns") List<String> columns,
-                                                  @Param("salaryCustomDto") SalaryCustomDto salaryCustomDto);
+    List<Map<String,Object>> getSalaryByFuzzyNameAndYear(@Param("columns") List<String> columns,
+                                                         @Param("salaryCustomDto") SalaryCustomDto salaryCustomDto);
+
+    List<Map<String,Object>> getSalaryByFuzzyNameAndYearAndMonth(@Param("columns") List<String> columns,
+                                                                 @Param("salaryCustomDto") SalaryCustomDto salaryCustomDto);
+
+    List<Map<String,Object>> getSalaryByNoAndYear(@Param("salaryCustomDto") SalaryCustomDto salaryCustomDto, @Param("no") String no);
+
+    List<Map<String,Object>> getSalaryByNoAndYearAndMonth(@Param("salaryCustomDto") SalaryCustomDto salaryCustomDto, @Param("no") String no);
 }

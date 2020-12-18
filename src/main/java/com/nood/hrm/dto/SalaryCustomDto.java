@@ -13,6 +13,8 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
 //    @JsonFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
 //    @JsonFormat(pattern = "yyyy-MM")
     private String date;
+    private String year;
+    private String month;
 
 //    private String departmentName;
 

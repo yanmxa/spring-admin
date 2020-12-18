@@ -27,7 +27,31 @@
     </select>
 
 
-    <select id="getSalaryByFuzzyName" resultType="java.util.HashMap">
+    <select id="getSalaryByFuzzyNameAndYear" resultType="java.util.HashMap">
+        select
+        <foreach collection="columns" item="column" separator=",">
+            ${column}
+        </foreach>
+        from salary
+        <where>
+
+            <if test="salaryCustomDto.name != null and salaryCustomDto.name != ''">
+                AND
+                ( ${salaryCustomDto.departmentNameAlias} like CONCAT('%', #{salaryCustomDto.name}, '%')
+                OR ${salaryCustomDto.employeeNameAlias} like CONCAT('%', #{salaryCustomDto.name}, '%')
+                )
+
+            </if>
+
+            <if test="salaryCustomDto.year != null and salaryCustomDto.year != ''">
+                AND ${salaryCustomDto.dateAlias} like CONCAT('%', #{salaryCustomDto.year}, '%')
+            </if>
+
+        </where>
+        order by ${salaryCustomDto.employeeNoAlias}
+    </select>
+
+    <select id="getSalaryByFuzzyNameAndYearAndMonth" resultType="java.util.HashMap">
         select
         <foreach collection="columns" item="column" separator=",">
             ${column}
@@ -45,6 +69,44 @@
 
             <if test="salaryCustomDto.date != null and salaryCustomDto.date != ''">
                 AND ${salaryCustomDto.dateAlias} = #{salaryCustomDto.date}
+            </if>
+
+        </where>
+        order by ${salaryCustomDto.employeeNoAlias}
+    </select>
+
+    <select id="getSalaryByNoAndYear" resultType="java.util.HashMap">
+        select
+        *
+        from salary
+        <where>
+
+            <if test="salaryCustomDto.year != null and salaryCustomDto.year != ''">
+                AND ${salaryCustomDto.dateAlias} like CONCAT('%', #{salaryCustomDto.year}, '%')
+            </if>
+
+
+            <if test="no != null and no != ''">
+                AND ${salaryCustomDto.employeeNoAlias} = #{no}
+            </if>
+
+        </where>
+        order by ${salaryCustomDto.employeeNoAlias}
+    </select>
+
+
+    <select id="getSalaryByNoAndYearAndMonth" resultType="java.util.HashMap">
+        select
+        *
+        from salary
+        <where>
+
+            <if test="salaryCustomDto.date != null and salaryCustomDto.date != ''">
+                AND ${salaryCustomDto.dateAlias} like CONCAT('%', #{salaryCustomDto.date} , '%')
+            </if>
+
+            <if test="no != null and no != ''">
+                AND ${salaryCustomDto.employeeNoAlias} = #{no}
             </if>
 
         </where>

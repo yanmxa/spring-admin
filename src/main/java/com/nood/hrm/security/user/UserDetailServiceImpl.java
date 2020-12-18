@@ -29,6 +29,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userService.getUser(username);
+
         if (user == null) {
             throw new AuthenticationCredentialsNotFoundException("username " + username + " is not exist");
         } else if (user.getStatus() == User.Status.DISABLED){
@@ -36,7 +37,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         LoginUser loginUser = new LoginUser();
-
         BeanUtils.copyProperties(user, loginUser);
 
         loginUser.setPermissions(permissionMapper.listByUserId(user.getId()));

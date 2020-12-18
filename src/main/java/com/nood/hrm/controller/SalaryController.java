@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -160,6 +161,7 @@ public class SalaryController {
 
     @GetMapping(value = "/salaryTable")
     @ResponseBody
+//    @PreAuthorize("hasAuthority('biz:salary:query')")
     public Response getSalaryTable(TableRequest tableRequest, SalaryCustomDto salaryCustomDto) {
         tableRequest.countOffset();
         return salaryService.getSalaryTable(tableRequest.getOffset(), tableRequest.getLimit(), salaryCustomDto);
@@ -167,6 +169,7 @@ public class SalaryController {
 
     @RequestMapping(value = "/deleteSalaryByIdList", method = RequestMethod.POST)
     @ResponseBody
+//    @PreAuthorize("hasAuthority('biz:salary:del')")
     public Response DeleteSalaryByIdList(@RequestParam("idList") List<Integer> idList) {
         for (Integer id : idList) {
             int count = salaryService.deleteSalaryById(id.longValue());

@@ -27,7 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthFailureHandler authFailureHandler;
 
-    @Autowired
+//    @Autowired
     private RestAuthAccessDeniedHandler restAuthAccessDeniedHandler;
 
     @Autowired
@@ -78,9 +78,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedHandler(restAuthAccessDeniedHandler);
 
-        // 404
+////         403
 //        http.exceptionHandling()
-//                .accessDeniedPage("/unauth.html");
+//                .accessDeniedPage("/error/403.html");
 
 //        http.formLogin()
 //                .loginProcessingUrl("/user/login")
