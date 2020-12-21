@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -93,25 +92,11 @@ public class SalaryController {
         salaryService.downLoadSalaryMeta(response);
     }
 
-//
-//    @PostMapping(value = "/edit")
-//    @ResponseBody
-//    public Response<User> updateUser(UserDto userDto, Integer roleId) {
-//        User user = null;
-//        user = userService.getUserByPhone(userDto.getTelephone());
-//        if (user != null && !user.getId().equals(userDto.getId())) {
-//            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
-//        }
-//        return userService.updateUser(userDto, roleId);
-//    }
-//
     @GetMapping(value = "/deleteMeta")
     @ResponseBody
     @ApiOperation(value="删除薪酬字段")
     @Log("删除薪酬字段")
     public Response deleteMeta(SalaryMeta salaryMeta) {
-//        int count = salaryService.deleteMeta(salaryMeta, true);
-
 
         if (cannotUpdate(salaryMeta.getId())) return Response.failure("该字段不可添加、更新及删除!");
 
@@ -182,10 +167,12 @@ public class SalaryController {
     private boolean cannotUpdate(SalaryMeta salaryMeta) {
         String columnName = PinyinUtil.hanziToPinyin(salaryMeta.getName(), "_");
         SalaryCustomDto salaryCustomDto = new SalaryCustomDto();
+
         if (columnName.equals(salaryCustomDto.departmentNameAlias) ||
                 columnName.equals(salaryCustomDto.dateAlias) ||
                 columnName.equals(salaryCustomDto.employeeNameAlias) ||
-                columnName.equals(salaryCustomDto.employeeNoAlias)) {
+                columnName.equals(salaryCustomDto.employeeNoAlias) ||
+                columnName.equals(salaryCustomDto.noAlias)) {
             return true;
         }
         return false;
@@ -193,15 +180,7 @@ public class SalaryController {
 
     private boolean cannotUpdate(Integer metaId) {
         SalaryMeta salaryMeta = salaryService.getById(metaId);
-        String columnName = PinyinUtil.hanziToPinyin(salaryMeta.getName(), "_");
-        SalaryCustomDto salaryCustomDto = new SalaryCustomDto();
-        if (columnName.equals(salaryCustomDto.departmentNameAlias) ||
-                columnName.equals(salaryCustomDto.dateAlias) ||
-                columnName.equals(salaryCustomDto.employeeNameAlias) ||
-                columnName.equals(salaryCustomDto.employeeNoAlias)) {
-            return true;
-        }
-        return false;
+        return cannotUpdate(salaryMeta);
     }
 
 }

@@ -17,8 +17,8 @@ public interface SalaryMetaMapper {
 
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    @Insert("insert into salary_meta(name, type, property, detail, history, sort, isDecimal, status, createTime, updateTime) " +
-            "values(#{name}, #{type}, #{property}, #{detail}, #{history}, #{sort}, #{isDecimal}, #{status}, now(), now())")
+    @Insert("insert into salary_meta(name, type, property, detail, history, sort, isDecimal, status, version, createTime, updateTime) " +
+            "values(#{name}, #{type}, #{property}, #{detail}, #{history}, #{sort}, #{isDecimal}, #{status}, #{version}, now(), now())")
     int save(SalaryMeta salaryMeta);
 
     int updateSalaryMeta(SalaryMeta salaryMeta);
@@ -42,4 +42,7 @@ public interface SalaryMetaMapper {
 
     @Select("select * from salary_meta where name=#{name}")
     SalaryMeta getMetaByName(@Param("name") String name);
+
+    @Select("select Max(version) from salary_meta")
+    Integer getLatestVersion();
 }

@@ -21,6 +21,8 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
 //    private Integer departmentId;
 
     // 用于和自动申城的薪资表进行关联
+    public String noChinese = "序号";
+    public String noAlias = "xu_hao";
     public String departmentNameAlias = "bu_men";       // 用作权限控制
     public String employeeNameAlias = "xing_ming";
     public String employeeNoAlias = "gong_hao";          // 用作权限控制

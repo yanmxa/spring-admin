@@ -28,6 +28,9 @@
             <if test="sort != null">
                 sort = #{sort},
             </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
             updateTime = #{updateTime}
         </set>
         where t.id = #{id}
