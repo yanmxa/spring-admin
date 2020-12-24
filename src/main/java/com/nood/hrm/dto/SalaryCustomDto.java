@@ -24,6 +24,7 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
     public String noChinese = "序号";
     public String noAlias = "xu_hao";
     public String departmentNameAlias = "bu_men";       // 用作权限控制
+    public String departmentNoAlias = "";
     public String employeeNameAlias = "xing_ming";
     public String employeeNoAlias = "gong_hao";          // 用作权限控制
     public String dateAlias = "yue_fen";                           // 日期，用作数据过滤

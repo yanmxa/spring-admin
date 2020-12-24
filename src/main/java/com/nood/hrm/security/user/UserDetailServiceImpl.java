@@ -28,10 +28,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        // actually the username is the userNo
         User user = userService.getUser(username);
 
         if (user == null) {
-            throw new AuthenticationCredentialsNotFoundException("username " + username + " is not exist");
+            throw new UsernameNotFoundException("工号 " + username + " 不存在！");
         } else if (user.getStatus() == User.Status.DISABLED){
             throw new LockedException("用户被锁定, 请联系管理员");
         }

@@ -4,6 +4,7 @@ import com.nood.hrm.security.auth.AuthFailureHandler;
 import com.nood.hrm.security.auth.AuthSuccessHandler;
 import com.nood.hrm.security.auth.LogoutSuccessHandler;
 import com.nood.hrm.security.auth.RestAuthAccessDeniedHandler;
+import com.nood.hrm.security.user.CustomPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -35,12 +35,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
+//        return new BCryptPasswordEncoder();
+        return new CustomPasswordEncoder();
     }
+
+//    @Bean
+//    public PasswordEncoder md5Encoder() {
+//        return new Md5PasswordEncoder();
+//    }
 
     // 认证操作
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.userDetailsService(userDetailServiceImpl).passwordEncoder(encoder());
     }
 

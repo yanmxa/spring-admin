@@ -32,6 +32,7 @@ public class LoginUser extends User implements UserDetails {
 
     /**
      * 是否过期
+     *
      * @return
      */
     @Override
@@ -41,6 +42,7 @@ public class LoginUser extends User implements UserDetails {
 
     /**
      * 是否锁定
+     *
      * @return
      */
     @Override
@@ -50,6 +52,7 @@ public class LoginUser extends User implements UserDetails {
 
     /**
      * 凭证是否过期
+     *
      * @return
      */
     @Override
@@ -59,6 +62,7 @@ public class LoginUser extends User implements UserDetails {
 
     /**
      * 是否可用
+     *
      * @return
      */
     @Override
@@ -69,15 +73,14 @@ public class LoginUser extends User implements UserDetails {
 
     /**
      * 判断是否为admin用户
+     *
      * @return
      */
-    public boolean isAdmin()
-    {
+    public boolean isAdmin() {
         return isAdmin(this.getId().intValue());
     }
 
-    public static boolean isAdmin(Integer userId)
-    {
+    public static boolean isAdmin(Integer userId) {
         return userId != null && 1 == userId;
     }
 }

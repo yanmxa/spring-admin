@@ -7,6 +7,7 @@ import com.nood.hrm.mapper.RoleUserMapper;
 import com.nood.hrm.mapper.UserMapper;
 import com.nood.hrm.model.RoleUser;
 import com.nood.hrm.model.User;
+import com.nood.hrm.security.SpringSecurityConfig;
 import com.nood.hrm.security.data.DataPermission;
 import com.nood.hrm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Autowired
+    private SpringSecurityConfig securityConfig;
+
     @Override
     public User getUser(String username) {
-        return userMapper.getUserByName(username);
+        User user = null;
+        if ("admin".equals(username)) user = userMapper.getUserByName(username);
+        else user = userMapper.getUserByNo(username);
+//        return userMapper.getUserByName(username);
+        return user;
     }
 
     @Override
@@ -66,7 +74,8 @@ public class UserServiceImpl implements UserService {
 //            return Response.failure(ResponseCode.PHONE_REPEAT.getCode(), ResponseCode.PHONE_REPEAT.getMessage());
 //        }
         user.setStatus(1);
-        user.setPassword(new BCryptPasswordEncoder().encode(User.defaultPassword));
+//        securityConfig.encoder().encode(User.defaultPassword);
+        user.setPassword(securityConfig.encoder().encode(User.defaultPassword));
         userMapper.save(user);
 
         if (roleId != null) {
@@ -141,10 +150,10 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return Response.failure(1, "用户不存在");
         }
-        if (!new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
+        if (!securityConfig.encoder().matches(oldPassword, user.getPassword())) {
             return Response.failure(1,"旧密码错误");
         }
-        userMapper.changePassword(user.getId(), new BCryptPasswordEncoder().encode(newPassword));
+        userMapper.changePassword(user.getId(), securityConfig.encoder().encode(newPassword));
         return Response.success();
 
     }

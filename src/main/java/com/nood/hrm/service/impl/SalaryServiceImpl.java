@@ -3,14 +3,11 @@ package com.nood.hrm.service.impl;
 import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
-import com.nood.hrm.mapper.DepartmentMapper;
-import com.nood.hrm.mapper.RoleDepartmentMapper;
-import com.nood.hrm.mapper.SalaryMapper;
-import com.nood.hrm.mapper.SalaryMetaMapper;
+import com.nood.hrm.mapper.*;
 import com.nood.hrm.model.Department;
 import com.nood.hrm.model.Role;
 import com.nood.hrm.model.SalaryMeta;
-import com.nood.hrm.security.data.DataScope;
+import com.nood.hrm.model.User;
 import com.nood.hrm.security.user.LoginUser;
 import com.nood.hrm.service.SalaryService;
 import com.nood.hrm.util.ExcelData;
@@ -56,6 +53,9 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Autowired
     private RoleDepartmentMapper roleDepartmentMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public Response<SalaryMeta> getAllMetaByPage(Integer offset, Integer limit) {
@@ -313,12 +313,16 @@ public class SalaryServiceImpl implements SalaryService {
         List<Map<String, Object>> salaryByFuzzyName = getSalaryGroupByNo(salaryCustomDto);
 
         // 1.2 从loginUser中获取 DepartmentSet 过滤后，排序，返回一个List
-        Set<String> departmentNameSet = getDepartmentNamePermission();
+//        Set<String> departmentNameSet = getDepartmentNamePermission();
+        Set<String> departmentNoSet = getDepartmentNoPermission();
+
         List<Map<String, Object>> salaryByFilter = salaryByFuzzyName.stream()
                 .filter(recordMap -> {
-                    if (departmentNameSet.size() > 0) {
-                        String departmentName = (String) recordMap.get(salaryCustomDto.getDepartmentNameAlias());
-                        return departmentNameSet.contains(departmentName);
+                    if (departmentNoSet.size() > 0) {
+                        String userNo = recordMap.get(salaryCustomDto.getEmployeeNoAlias()).toString();
+                        User user = userMapper.getUserByNo(userNo);
+                        Department department = departmentMapper.getDeptById(user.getDepartmentId());
+                        return departmentNoSet.contains(department.getNo());
                     } else {
 //                        System.out.println(" NO " + SecurityUtil.getCurrentUser().getNo() + " - " + recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
                         return SecurityUtil.getCurrentUser().getNo().equals(recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
@@ -498,24 +502,59 @@ public class SalaryServiceImpl implements SalaryService {
      * 根据登录用户获取其部门可以查看的数据范围，为空时表示只可以查看自己的数据
      * @return
      */
-    private Set<String> getDepartmentNamePermission() {
+//    private Set<String> getDepartmentNamePermission() {
+//        List<Department> departmentList = new ArrayList<>();
+//        LoginUser loginUser = SecurityUtil.getCurrentUser();
+//
+//        for (Role role : loginUser.getRoles()) {
+//
+//            String dataScopeCode = role.getDataScope();
+//            if (ALL.getCode().equals(dataScopeCode)) {
+//
+//                departmentList = departmentMapper.getFuzzyDept(new Department());
+//
+//            } else if (CUSTOM.getCode().equals(dataScopeCode)) {
+//
+//                departmentList = roleDepartmentMapper.getDepartmentByRoleId(role.getId());
+//
+//            } else if (DEPT.getCode().equals(dataScopeCode)) {
+//
+//                departmentList.add(departmentMapper.getDeptById(loginUser.getDepartmentId()));
+//
+//            } else if (DEPT_AND_CHILD.getCode().equals(dataScopeCode)) {
+//
+//                departmentList = departmentMapper.selectChildrenDeptById(loginUser.getDepartmentId());
+//
+//            } else {
+////                DataScope.SELF.getCode().equals(dataScopeCode)
+//            }
+//
+//        }
+//
+//        return departmentList.stream().map(e -> e.getDeptName()).collect(Collectors.toSet());
+//    }
+
+    private Set<String> getDepartmentNoPermission() {
+
         List<Department> departmentList = new ArrayList<>();
         LoginUser loginUser = SecurityUtil.getCurrentUser();
+
         for (Role role : loginUser.getRoles()) {
+
             String dataScopeCode = role.getDataScope();
             if (ALL.getCode().equals(dataScopeCode)) {
 
                 departmentList = departmentMapper.getFuzzyDept(new Department());
 
-            } else if (DataScope.CUSTOM.getCode().equals(dataScopeCode)) {
+            } else if (CUSTOM.getCode().equals(dataScopeCode)) {
 
                 departmentList = roleDepartmentMapper.getDepartmentByRoleId(role.getId());
 
-            } else if (DataScope.DEPT.getCode().equals(dataScopeCode)) {
+            } else if (DEPT.getCode().equals(dataScopeCode)) {
 
                 departmentList.add(departmentMapper.getDeptById(loginUser.getDepartmentId()));
 
-            } else if (DataScope.DEPT_AND_CHILD.getCode().equals(dataScopeCode)) {
+            } else if (DEPT_AND_CHILD.getCode().equals(dataScopeCode)) {
 
                 departmentList = departmentMapper.selectChildrenDeptById(loginUser.getDepartmentId());
 
@@ -524,10 +563,8 @@ public class SalaryServiceImpl implements SalaryService {
             }
 
         }
-
-        return departmentList.stream().map(e -> e.getDeptName()).collect(Collectors.toSet());
+        return departmentList.stream().map(e -> e.getNo()).collect(Collectors.toSet());
     }
-
 
 
     @Override
