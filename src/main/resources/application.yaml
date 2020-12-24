@@ -7,7 +7,25 @@ spring:
       enabled: true
       additional-paths: resources/**,static/**,templates/**    #需要实时更新的目录
 
-  datasource:
+#  autoconfigure:
+#    exclude:  com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 动态数据源改变了原有的去除druid配置
+#
+#  datasource:
+#    dynamic:
+#      primary: master
+#      datasource:
+#        master:
+#          username: root
+#          password: 123
+#          url: jdbc:mysql://localhost:3306/hrm?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+#          driver-class-name: com.mysql.jdbc.Driver
+#        user:
+#          username: root
+#          password: 123
+#          url: jdbc:mysql://localhost:3306/hrm2?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+#          driver-class-name: com.mysql.jdbc.Driver
+
+
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/hrm?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
@@ -33,6 +51,8 @@ spring:
     filters: stat,wall,slf4j
     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+
 
 
   jackson:
