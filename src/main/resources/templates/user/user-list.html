@@ -107,7 +107,7 @@
                     $.ajax({
                         url:"/user/delete",
                         type:"GET",
-                        data:{Userid :data.Userid},
+                        data:{Userid :data.userid},
                         dataType:'json',
                         success:function(data){
 
@@ -155,7 +155,7 @@
             var ids = [];
             $.each(data, function (index, item) {
                 // alert(item.username)
-                ids.push(item.Userid);
+                ids.push(item.userid);
             });
 
             layer.confirm('确定要删除吗?', function (index) {

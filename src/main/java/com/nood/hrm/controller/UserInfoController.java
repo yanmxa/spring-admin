@@ -111,7 +111,8 @@ public class UserInfoController {
     @ResponseBody
     @ApiOperation(value="删除用户")
     @Log("删除用户")
-    public Response deleteUser(@RequestParam("userId") String userId) {
+    public Response deleteUser(@RequestParam("Userid") String userId) {
+        System.out.println(userId);
         int count = userInfoService.deleteUserById(userId);
         if (count > 0) return Response.success();
         else return Response.failure();
@@ -140,10 +141,10 @@ public class UserInfoController {
 
     }
 
-//    @PostMapping("/changePassword")
-//    @ResponseBody
-//    @Log("修改用户密码")
-//    public Response<User> changePassword(String username, String oldPassword, String newPassword) {
-//        return userService.changePassword(username, oldPassword, newPassword);
-//    }
+    @PostMapping("/changePassword")
+    @ResponseBody
+    @Log("修改用户密码")
+    public Response<User> changePassword(String Userid, String oldPassword, String newPassword) {
+        return userInfoService.changePassword(Userid, oldPassword, newPassword);
+    }
 }

@@ -14,7 +14,7 @@ public interface UserInfoMapper {
     @Select("select * from SD_UserInfo t where t.NameCn = #{NameCn}")
     UserInfo getUserByName(String NameCn);
 
-    @Select("select * from SD_UserInfo t where t.Userid = #{userId}")
+    @Select("select * from apps.SD_UserInfo t where t.Userid = #{userId}")
     UserInfo getUserById(String userId);
 
     @Select("select count(1) from SD_UserInfo t")
@@ -48,8 +48,8 @@ public interface UserInfoMapper {
                                               @Param("startPosition") Integer offset,
                                               @Param("limit") Integer limit);
 
-    @Update("update sys_user t set t.password = #{password} where t.id = #{id}")
-    int changePassword(@Param("id") Long id, @Param("password") String password);
+//    @Update("update sys_user t set t.password = #{password} where t.id = #{id}")
+//    int changePassword(@Param("id") Long id, @Param("password") String password);
 
 
 

@@ -256,15 +256,16 @@ public class SalaryServiceImpl implements SalaryService {
             }
 
             //读取行
-            for(int rowNum=1;rowNum < sheet.getLastRowNum()+1; rowNum++){
+            for(int rowNum=1;rowNum < sheet.getLastRowNum() + 1; rowNum++){
                 Row row = sheet.getRow(rowNum);
                 if(row!=null) {
                     for(int cellNum = 0;cellNum < row.getLastCellNum();cellNum++){
+                        if (row.getCell(cellNum) == null) continue;
                         if (index2Numeric.get(cellNum) == 1) {
                             column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getNumericCellValue());
                         } else {
-                            row.getCell(cellNum).setCellType(Cell.CELL_TYPE_STRING);
-                            column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getStringCellValue());
+                                row.getCell(cellNum).setCellType(Cell.CELL_TYPE_STRING);
+                                column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getStringCellValue());
                         }
                     }
 //                    System.out.println(column2record);
@@ -328,6 +329,7 @@ public class SalaryServiceImpl implements SalaryService {
                         UserInfo user = getUserInfoByUserId(userNo);
 //                        Department department = departmentMapper.getDeptById(user.getDepartmentId());
 //                        return departmentNoSet.contains(department.getNo());
+                        if (user == null) return false;
                         return departmentNoSet.contains(user.getDeptId());
                     } else {
 //                        System.out.println(" NO " + SecurityUtil.getCurrentUser().getNo() + " - " + recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
@@ -361,8 +363,8 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @DS("user")
-    UserInfo getUserInfoByUserId(String userInfo) {
-        return userInfoMapper.getUserById(userInfo);
+    UserInfo getUserInfoByUserId(String userInfoNo) {
+        return userInfoMapper.getUserById(userInfoNo);
     }
 
     /**

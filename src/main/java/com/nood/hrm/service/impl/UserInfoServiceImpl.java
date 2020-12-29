@@ -46,9 +46,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @DS("user")
     @Override
     public UserInfo getUser(String userId) {
-        UserInfo user = null;
-        if ("admin".equals(userId)) user = userInfoMapper.getUserByName(userId);
-        else user = userInfoMapper.getUserById(userId);
+        UserInfo user = userInfoMapper.getUserById(userId);
         return user;
     }
 
@@ -78,7 +76,14 @@ public class UserInfoServiceImpl implements UserInfoService {
 ////            roleList.add(role);
 ////        });
 //        roleList.add();
+        if (roleUser == null) return null;
         return roleMapper.getById(roleUser.getRoleId());
+    }
+
+    @DS("user")
+    @Override
+    public UserInfo getUserByName(String name) {
+        return userInfoMapper.getUserByName(name);
     }
 
     @Override
@@ -99,7 +104,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         List<UserInfo> userDtos = userInfoMapper.getAllUserInfoByPage(offset, limit, user);
         userDtos.forEach(userInfo -> {
-            userInfo.setRoleName( getRoleByUserId(userInfo.getUserid()).getName());
+            Role role = getRoleByUserId(userInfo.getUserid());
+            if (role != null) userInfo.setRoleName( role.getName());
             userInfo.setDeptName( getDeptNameByDeptId(userInfo.getDeptId()));
         });
 
@@ -202,24 +208,21 @@ public class UserInfoServiceImpl implements UserInfoService {
                 userInfoMapper.getUserByFuzzyUsernameWithPage(username, offset, limit));
     }
 
-//    @Override
-//    public Response<User> changePassword(String username, String oldPassword, String newPassword) {
-//        User user = userMapper.getUserByName(username);
-//        if (user == null) {
-//            return Response.failure(1, "用户不存在");
-//        }
-//        if (!securityConfig.encoder().matches(oldPassword, user.getPassword())) {
-//            return Response.failure(1,"旧密码错误");
-//        }
-//        userMapper.changePassword(user.getId(), securityConfig.encoder().encode(newPassword));
-//        return Response.success();
-//
-//    }
-//
-//    @Override
-//    public User getUserByNo(String no) {
-//        return userMapper.getUserByNo(no);
-//    }
+    @Override
+    @DS("user")
+    public Response changePassword(String userid, String oldPassword, String newPassword) {
+        UserInfo user = userInfoMapper.getUserById(userid);
+        if (user == null) {
+            return Response.failure("用户不存在");
+        }
+        if (!securityConfig.encoder().matches(oldPassword, user.getPassword())) {
+            return Response.failure("旧密码错误");
+        }
+        user.setPassword(securityConfig.encoder().encode(newPassword));
+        userInfoMapper.updateUser(user);
+        return Response.success();
+
+    }
 
 
 }

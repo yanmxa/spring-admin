@@ -159,17 +159,11 @@
             selectCardHeight: "200",
         });
 
-        var param = dtree.getNowParam("dataTree");
-        formData = $("#DeptId");
         dtree.on("node('dataTree')" ,function(obj){
             var param = dtree.getNowParam("dataTree");
             $("#DeptId").val(param.nodeId);
             $("#DeptName").val(param.context);
-
-            formData = $("#DeptId");
         });
-
-
 
         getAllRole(function(){
             layui.form.render('radio')

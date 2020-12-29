@@ -21,7 +21,7 @@ public interface SalaryMapper {
     @Insert("alter table ${table} add column `${name}` varchar(255) not null comment #{commit}")
     void addVarcharColumn(@Param("name") String name, @Param("commit") String commit, @Param("table") String table);
 
-    @Delete("alter ${table} salary drop column ${salaryColumn}")
+    @Delete("alter table ${table} drop column ${salaryColumn}")
     void deleteColumn(@Param("salaryColumn") String salaryColumn, @Param("table") String table);
 
     // alter table <表名> change <字段名> <字段新名称> <字段的类型>

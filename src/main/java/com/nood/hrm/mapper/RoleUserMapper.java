@@ -23,7 +23,7 @@ public interface RoleUserMapper {
 
     int updateRoleUser(RoleUser roleUser);
 
-    @Delete("delete from sys_role_user where userId = #{userId}")
+    @Delete("delete from hrm.sys_role_user where userId = #{userId}")
     int deleteByUserId(String userId);
 
     @Select("select * from sys_role_user t where t.roleId = #{roleId}")

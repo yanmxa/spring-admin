@@ -23,7 +23,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         // actually the username is the userNo
 //        User user = userService.getUser(userId);
-        UserInfo userInfo = userInfoService.getUser(userId);
+
+        UserInfo userInfo = userInfoService.getUserById(userId);
+        if ("admin".equals(userId)) userInfo = userInfoService.getUserByName(userId);
+
+//        if ("admin".equals(userId)) userInfo = userInfoService.getUser(userId);
 
 
         if (userInfo == null) {
@@ -41,10 +45,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         loginUser.setPassword(userInfo.getPassword());
         loginUser.setDepartmentId(userInfo.getDeptId());
 
-        loginUser.setPermissions(userInfoService.getPermissionByUserId(userId));
+        loginUser.setPermissions(userInfoService.getPermissionByUserId(loginUser.getUserId()));
 
         List<Role> roles = new ArrayList<>();
-        roles.add(userInfoService.getRoleByUserId(userId));
+        roles.add(userInfoService.getRoleByUserId(loginUser.getUserId()));
         loginUser.setRoles(roles);
 
         return loginUser;

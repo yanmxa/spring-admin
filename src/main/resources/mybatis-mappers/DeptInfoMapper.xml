@@ -6,7 +6,7 @@
 
     <sql id="selectDeptVo">
         select d.id, d.deptParentId, d.deptId, d.deptName, d.deptShortName,d.state, d.sequence
-        from DeptInfo d
+        from master.DeptInfo d
     </sql>
 
     <select id="getFuzzyDept" resultType="com.nood.hrm.model.DeptInfo">

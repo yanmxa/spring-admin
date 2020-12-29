@@ -27,11 +27,14 @@ public interface UserInfoService {
 
     Response<UserInfo> getUserByFuzzyUsername(String username, Integer offset, Integer limit);
 
-//    Response<User> changePassword(String username, String oldPassword, String newPassword);
+    Response<User> changePassword(String userid, String oldPassword, String newPassword);
 
 //    User getUserByNo(String no);
 
     List<Permission> getPermissionByUserId(String userId);
 
     Role getRoleByUserId(String userId);
+
+    UserInfo getUserByName(String userId);
+
 }
