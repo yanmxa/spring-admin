@@ -46,7 +46,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Response getMenu(Long userId) {
+    public Response getMenu(String userId) {
+
         List<Permission> permissionList = permissionMapper.listByUserId(userId);
 
         permissionList.sort((o1, o2) -> o1.getSort().compareTo(o2.getSort()));

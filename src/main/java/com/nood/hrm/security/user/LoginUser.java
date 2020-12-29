@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class LoginUser extends User implements UserDetails {
+public class LoginUser implements UserDetails {
 
     private List<Permission> permissions;
-
     private List<Role> roles;
-
-    private String no;
+    private String userId;
+    private String departmentId;
+    private String password;
+    private String userName;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -28,6 +29,16 @@ public class LoginUser extends User implements UserDetails {
                 .filter(p -> !StringUtils.isEmpty(p.getPermission()))
                 .map(p -> new SimpleGrantedAuthority(p.getPermission()))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return userName;
     }
 
     /**
@@ -40,15 +51,20 @@ public class LoginUser extends User implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
     /**
      * 是否锁定
      *
      * @return
      */
-    @Override
-    public boolean isAccountNonLocked() {
-        return getStatus() != Status.LOCKED;
-    }
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return getStatus() != Status.LOCKED;
+//    }
 
     /**
      * 凭证是否过期
@@ -76,9 +92,9 @@ public class LoginUser extends User implements UserDetails {
      *
      * @return
      */
-    public boolean isAdmin() {
-        return isAdmin(this.getId().intValue());
-    }
+//    public boolean isAdmin() {
+//        return isAdmin(this.get.intValue());
+//    }
 
     public static boolean isAdmin(Integer userId) {
         return userId != null && 1 == userId;

@@ -14,15 +14,23 @@ spring:
     dynamic:
       primary: master
       datasource:
+
         master:
           username: root
           password: 123
           url: jdbc:mysql://localhost:3306/hrm?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
           driver-class-name: com.mysql.cj.jdbc.Driver
+
         user:
           username: root
           password: 123
-          url: jdbc:mysql://localhost:3306/hrm2?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+          url: jdbc:mysql://localhost:3306/apps?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+          driver-class-name: com.mysql.cj.jdbc.Driver
+
+        dept:
+          username: root
+          password: 123
+          url: jdbc:mysql://localhost:3306/master?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
           driver-class-name: com.mysql.cj.jdbc.Driver
 
 

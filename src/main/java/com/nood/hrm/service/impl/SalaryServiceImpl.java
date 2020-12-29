@@ -1,13 +1,11 @@
 package com.nood.hrm.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.nood.hrm.common.response.Response;
 import com.nood.hrm.dto.SalaryCustomDto;
 import com.nood.hrm.dto.SalaryMetaDto;
 import com.nood.hrm.mapper.*;
-import com.nood.hrm.model.Department;
-import com.nood.hrm.model.Role;
-import com.nood.hrm.model.SalaryMeta;
-import com.nood.hrm.model.User;
+import com.nood.hrm.model.*;
 import com.nood.hrm.security.user.LoginUser;
 import com.nood.hrm.service.SalaryService;
 import com.nood.hrm.util.ExcelData;
@@ -40,6 +38,7 @@ import static com.nood.hrm.security.data.DataScope.*;
 @Service
 @Transactional
 @Slf4j
+@DS("master")
 public class SalaryServiceImpl implements SalaryService {
 
     @Autowired
@@ -48,14 +47,19 @@ public class SalaryServiceImpl implements SalaryService {
     @Autowired
     private SalaryMapper salaryMapper;
 
-    @Autowired
-    private DepartmentMapper departmentMapper;
+//    @Autowired
+//    private DepartmentMapper departmentMapper;
 
     @Autowired
     private RoleDepartmentMapper roleDepartmentMapper;
 
+//    @Autowired
+//    private UserMapper userMapper;
+
     @Autowired
-    private UserMapper userMapper;
+    private DeptInfoMapper deptInfoMapper;
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
     @Override
     public Response<SalaryMeta> getAllMetaByPage(Integer offset, Integer limit) {
@@ -320,12 +324,14 @@ public class SalaryServiceImpl implements SalaryService {
                 .filter(recordMap -> {
                     if (departmentNoSet.size() > 0) {
                         String userNo = recordMap.get(salaryCustomDto.getEmployeeNoAlias()).toString();
-                        User user = userMapper.getUserByNo(userNo);
-                        Department department = departmentMapper.getDeptById(user.getDepartmentId());
-                        return departmentNoSet.contains(department.getNo());
+//                        User user = userMapper.getUserByNo(userNo);
+                        UserInfo user = getUserInfoByUserId(userNo);
+//                        Department department = departmentMapper.getDeptById(user.getDepartmentId());
+//                        return departmentNoSet.contains(department.getNo());
+                        return departmentNoSet.contains(user.getDeptId());
                     } else {
 //                        System.out.println(" NO " + SecurityUtil.getCurrentUser().getNo() + " - " + recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
-                        return SecurityUtil.getCurrentUser().getNo().equals(recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
+                        return SecurityUtil.getCurrentUser().getUserId().equals(recordMap.get(salaryCustomDto.getEmployeeNoAlias()));
                     }
                 })
                 .sorted((o1, o2) -> {
@@ -352,6 +358,11 @@ public class SalaryServiceImpl implements SalaryService {
         Response response = Response.success(count, salaryByFilter.subList(fromIndex, toIndex));
 
          return response;
+    }
+
+    @DS("user")
+    UserInfo getUserInfoByUserId(String userInfo) {
+        return userInfoMapper.getUserById(userInfo);
     }
 
     /**
@@ -536,7 +547,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     private Set<String> getDepartmentNoPermission() {
 
-        List<Department> departmentList = new ArrayList<>();
+        List<DeptInfo> departmentList = new ArrayList<>();
         LoginUser loginUser = SecurityUtil.getCurrentUser();
 
         for (Role role : loginUser.getRoles()) {
@@ -544,26 +555,44 @@ public class SalaryServiceImpl implements SalaryService {
             String dataScopeCode = role.getDataScope();
             if (ALL.getCode().equals(dataScopeCode)) {
 
-                departmentList = departmentMapper.getFuzzyDept(new Department());
+//                departmentList = deptInfoMapper.getFuzzyDept(new DeptInfo());
+                departmentList = getFuzzyDeptInfo(new DeptInfo());
 
             } else if (CUSTOM.getCode().equals(dataScopeCode)) {
 
-                departmentList = roleDepartmentMapper.getDepartmentByRoleId(role.getId());
+                List<String> ids = roleDepartmentMapper.getDeptIdsByRoleId(role.getId());
+
+//                departmentList = roleDepartmentMapper.getDepartmentByRoleId(role.getId());
+                departmentList = getDeptListInfoByIdList(ids);
 
             } else if (DEPT.getCode().equals(dataScopeCode)) {
 
-                departmentList.add(departmentMapper.getDeptById(loginUser.getDepartmentId()));
+                departmentList.add(getDeptInfoByDeptId(loginUser.getDepartmentId()));
 
             } else if (DEPT_AND_CHILD.getCode().equals(dataScopeCode)) {
 
-                departmentList = departmentMapper.selectChildrenDeptById(loginUser.getDepartmentId());
+//                departmentList = deptInfoMapper.selectChildrenDeptById(loginUser.getDepartmentId());
 
             } else {
 //                DataScope.SELF.getCode().equals(dataScopeCode)
             }
 
         }
-        return departmentList.stream().map(e -> e.getNo()).collect(Collectors.toSet());
+        return departmentList.stream().filter(e -> e != null).map(e -> e.getDeptId()).collect(Collectors.toSet());
+    }
+
+
+    @DS("dept")
+    List<DeptInfo> getFuzzyDeptInfo(DeptInfo deptInfo) {
+        return deptInfoMapper.getFuzzyDept(deptInfo);
+    }
+    @DS("dept")
+    List<DeptInfo> getDeptListInfoByIdList(List<String> ids) {
+        return ids.stream().map(id -> getDeptInfoByDeptId(id)).collect(Collectors.toList());
+    }
+    @DS("dept")
+    DeptInfo getDeptInfoByDeptId(String deptId) {
+        return deptInfoMapper.getDeptById(deptId);
     }
 
 

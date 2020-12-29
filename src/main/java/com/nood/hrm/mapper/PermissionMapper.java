@@ -20,7 +20,7 @@ public interface PermissionMapper {
             "inner join sys_role_permission srp on sru.roleId = srp.roleId " +
             "left join sys_permission sp on srp.permissionId = sp.id " +
             "where sru.userId = #{userId} order by sp.sort")
-    List<Permission> listByUserId(Long userId);
+    List<Permission> listByUserId(String userId);
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into sys_permission(parentId, name, css, href, type, permission, sort) values(#{parentId}, #{name}, #{css}, #{href}, #{type}, #{permission}, #{sort})")

@@ -33,7 +33,7 @@ public interface RoleMapper {
 
     int saveRole(Role role);
 
-    @Select("select * from sys_role t where t.id = #{id}")
+    @Select("select * from hrm.sys_role t where t.id = #{id}")
     Role getById(Integer id);
 
     int update(Role role);

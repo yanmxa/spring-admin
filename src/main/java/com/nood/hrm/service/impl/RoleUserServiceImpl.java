@@ -16,7 +16,7 @@ public class RoleUserServiceImpl implements RoleUserService {
     private RoleUserMapper roleUserMapper;
 
     @Override
-    public Response<RoleUser> getRoleUserByUserId(Integer userId) {
+    public Response<RoleUser> getRoleUserByUserId(String userId) {
         RoleUser roleUser = roleUserMapper.getRoleUserByUserId(userId);
         if (roleUser != null) {
             return Response.success(roleUser);

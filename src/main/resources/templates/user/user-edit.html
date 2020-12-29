@@ -16,14 +16,14 @@
     <form class="layui-form" style="padding: 2% 12% 0% 8%">
 
 
-        <input type="hidden" id="id" name="id" th:value="${user.id}" >
+        <!--<input type="hidden" id="id" name="id" th:value="${user.Userid}" >-->
 
         <div class="layui-form-item">
             <label for="userId" class="layui-form-label">
                 <span class="x-red">*</span>员工编号
             </label>
             <div class="layui-input-block">
-                <input type="text" id="userId" th:value="${user.no}" name="no" lay-verify="required" autocomplete="off" class="layui-input">
+                <input type="text" id="Userid" th:value="${user.Userid}" name="Userid" lay-verify="required" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <!--<span class="x-red">*</span>将会-->
@@ -35,7 +35,7 @@
                 <span class="x-red">*</span>员工姓名
             </label>
             <div class="layui-input-block">
-                <input type="text" id="L_username" th:value="${user.username}" name="username" lay-verify="required" autocomplete="off" class="layui-input">
+                <input type="text" id="L_username" th:value="${user.NameCn}" name="NameCn" lay-verify="required" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <!--<span class="x-red">*</span>将会成为您唯一的登入名-->
@@ -45,8 +45,9 @@
         <div class="layui-form-item">
             <label class="layui-form-label">部门</label>
             <div class="layui-input-block">
-                <input type="number" id="departmentId" th:value="${user.departmentId}" name="departmentId"  lay-verify="departmentId" style="display:none;width: 0px" autocomplete="off" class="layui-input">
-                <ul id="dataTree" class="dtree" data-id="0" th:data-value="${user.departmentId}"></ul>
+                <input type="text" id="DeptName" th:value="${user.DeptName}" name="DeptName"  lay-verify="DeptName" style="display:none;width: 0px" class="layui-input">
+                <input type="text" id="DeptId" th:value="${user.DeptId}" name="DeptId"  lay-verify="departmentId" style="display:none;width: 0px" class="layui-input">
+                <ul id="dataTree" class="dtree" data-id="0" th:data-value="${user.DeptId}"></ul>
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <!--<span class="x-red">*</span>将会-->
@@ -54,25 +55,25 @@
         </div>
 
 
-        <div class="layui-form-item">
-            <label for="L_nickname" class="layui-form-label">
-                <span class="x-red"></span>昵称
-            </label>
-            <div class="layui-input-block">
-                <!--<input type="text" id="L_nickname" th:value="${user.nickname}" name="nickname" required="" lay-verify="nickname" autocomplete="off" class="layui-input">-->
-                <input type="text" id="L_nickname" th:value="${user.nickname}" name="nickname" required="" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <!--<span class="x-red">*</span>将会-->
-            </div>
-        </div>
+        <!--<div class="layui-form-item">-->
+            <!--<label for="L_nickname" class="layui-form-label">-->
+                <!--<span class="x-red"></span>教育水平-->
+            <!--</label>-->
+            <!--<div class="layui-input-block">-->
+                <!--&lt;!&ndash;<input type="text" id="L_nickname" th:value="${user.nickname}" name="nickname" required="" lay-verify="nickname" autocomplete="off" class="layui-input">&ndash;&gt;-->
+                <!--<input type="text" id="L_nickname" th:value="${user.Education}" name="Education" required="" autocomplete="off" class="layui-input">-->
+            <!--</div>-->
+            <!--<div class="layui-form-mid layui-word-aux">-->
+                <!--&lt;!&ndash;<span class="x-red">*</span>将会&ndash;&gt;-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="layui-form-item">
             <label for="L_telephone" class="layui-form-label">
-                <span class="x-red"></span>手机
+                <span class="x-red"></span>电话
             </label>
             <div class="layui-input-block">
                 <!--<input type="text" id="L_telephone" th:value="${user.telephone}" name="telephone" required="" lay-verify="telephone" autocomplete="off" class="layui-input">-->
-                <input type="text" id="L_telephone" th:value="${user.telephone}" name="telephone" required="" autocomplete="off" class="layui-input">
+                <input type="text" id="L_telephone" th:value="${user.OfficeTel}" name="OfficeTel" required="" autocomplete="off" class="layui-input">
             </div>
             <!--<div class="layui-form-mid layui-word-aux">-->
             <!--11位数字-->
@@ -82,16 +83,16 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">性别</label>
-            <div class="layui-input-block">
-                <input type="radio" th:field="${user.sex}" name="sex" value="1" title="男" checked="">
-                <input type="radio" th:field="${user.sex}" name="sex" value="0" title="女">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <!--<span class="x-red">*</span>将会-->
-            </div>
-        </div>
+        <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">性别</label>-->
+            <!--<div class="layui-input-block">-->
+                <!--<input type="radio" th:field="${user.sex}" name="sex" value="1" title="男" checked="">-->
+                <!--<input type="radio" th:field="${user.sex}" name="sex" value="0" title="女">-->
+            <!--</div>-->
+            <!--<div class="layui-form-mid layui-word-aux">-->
+                <!--&lt;!&ndash;<span class="x-red">*</span>将会&ndash;&gt;-->
+            <!--</div>-->
+        <!--</div>-->
 
         <input type="text" id="roleId"  name="roleId" style="display:none;"/>
         <div class="layui-form-item">
@@ -140,12 +141,12 @@
             selectCardHeight: "200",
         });
 
-        var param = dtree.getNowParam("dataTree");
-        formData = $("#departmentId");
+        // formData = $("#DeptId");
         dtree.on("node('dataTree')" ,function(obj){
             var param = dtree.getNowParam("dataTree");
-            $("#departmentId").val(param.nodeId);
-            formData = $("#departmentId");
+            $("#DeptId").val(param.nodeId);
+            $("#DeptName").val(param.context);
+
         });
 
         getAllRole(function(){
@@ -219,12 +220,12 @@
     }
 
     function getCurrentUserRole(callback){
-        var userId = $("#id").val()
+        var userId = $("#Userid").val()
         $.ajax({
             url:"/roleuser/getRoleUserByUserId",
             type:"POST",
             data:{
-                "userId" : userId
+                "Userid" : userId
             },
             dataType:'json',
 

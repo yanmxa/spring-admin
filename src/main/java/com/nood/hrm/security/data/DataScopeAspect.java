@@ -76,7 +76,7 @@ public class DataScopeAspect {
         }
         // 获取当前的用户, 如果是超级管理员，则不过滤数据
         LoginUser loginUser = SecurityUtil.getCurrentUser();
-        if (loginUser != null && !loginUser.isAdmin()) {
+        if (loginUser != null && !(loginUser.getUserId().equals("super_admin")) ) {
             dataScopeFilter(joinPoint, loginUser,
                     dataPermissionAnnotation.departmentAlias(),
                     dataPermissionAnnotation.userAlias());
@@ -118,7 +118,7 @@ public class DataScopeAspect {
             }
             else if (DATA_SCOPE_SELF.equals(dataScope)) {
                 if (StrUtil.isNotBlank(userAlias)) {
-                    sqlString.append(StrUtil.format(" OR {}.id = {} ", userAlias, user.getId()));
+                    sqlString.append(StrUtil.format(" OR {}.id = {} ", userAlias, user.getUserId()));
                 }
                 else {
                     // 数据权限为仅本人且没有userAlias别名不查询任何数据

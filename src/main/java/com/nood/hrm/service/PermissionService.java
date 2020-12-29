@@ -12,7 +12,7 @@ public interface PermissionService {
 
     Response<Permission> listByRoleId(int i);
 
-    Response<Permission> getMenu(Long userId);
+    Response<Permission> getMenu(String userId);
 
     Response<Permission> getAllMenu();
 

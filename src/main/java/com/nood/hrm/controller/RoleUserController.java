@@ -19,9 +19,17 @@ public class RoleUserController {
     @Autowired
     private RoleUserService roleUserService;
 
+//    @PostMapping(value = "/getRoleUserByUserId")
+//    public Response<RoleUser> getRoleUserById(String userId) {
+////        log.info("RoleUserController.getRoleUserById(userId) param : " + userId);
+//        return roleUserService.getRoleUserByUserId(userId);
+//    }
+
     @PostMapping(value = "/getRoleUserByUserId")
-    public Response<RoleUser> getRoleUserById(Integer  userId) {
+    public Response<RoleUser> getRoleUserById(String Userid) {
 //        log.info("RoleUserController.getRoleUserById(userId) param : " + userId);
-        return roleUserService.getRoleUserByUserId(userId);
+//        RoleUser roleUser =
+        return roleUserService.getRoleUserByUserId(Userid);
+
     }
 }

@@ -42,9 +42,11 @@
                     data : $("#login-form").serialize(),
                     success : function(datas) {
                         if(datas.authenticated == true){
-                            localStorage.setItem("userId", datas.principal.id);
+
+                            localStorage.setItem("userId", datas.principal.userId);
                             localStorage.setItem("username", datas.principal.username);
                             localStorage.setItem("nickName", datas.principal.nickname);
+                            // alert(datas.principal.username)
                             var authorities = datas.authorities;
                             var permission = [];
                             for(var i in authorities){

@@ -99,8 +99,10 @@ public class RoleController {
     @ApiOperation(value = "修改角色数据权限")
     @Log("修改角色权限")
     public Response uthDataScope(@RequestBody RoleDto roleDto) {
-
-        return roleService.authDataScope(roleDto);
+        System.out.println(roleDto);
+        Response response = roleService.authDataScope(roleDto);
+        System.out.println(response);
+        return response;
     }
 
 }

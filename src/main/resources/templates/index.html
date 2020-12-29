@@ -67,8 +67,10 @@
 <script>
     $(document).ready(function () {
         //显示用户名
-        var nickName = localStorage.nickName;
-        $("#show-nickName").text((nickName != null && nickName != undefined) ? nickName : "---");
+        var username = localStorage.username;
+        $("#show-nickName").text((username != null && username != undefined) ? username : "---");
+
+
 
         function Menu(eleId, userId) {
             this.eleId = eleId || "nav";

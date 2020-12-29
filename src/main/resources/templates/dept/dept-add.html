@@ -17,7 +17,7 @@
                     <label class="layui-form-label">
                         <span style="color: red">*</span>部门编号</label>
                     <div class="layui-input-block">
-                        <input type="text" name="no" lay-verify="no" th:value="${department.no}" autocomplete="off" placeholder="请输入部门编号" class="layui-input">
+                        <input type="text" name="deptId" lay-verify="deptId" th:value="${deptInfo.deptId}" autocomplete="off" placeholder="请输入部门编号" class="layui-input">
                     </div>
                 </div>
 
@@ -25,7 +25,7 @@
                     <label class="layui-form-label">
                         <span style="color: red">*</span>部门名称</label>
                     <div class="layui-input-block">
-                        <input type="text" name="deptName" lay-verify="deptName" th:value="${department.deptName}" autocomplete="off" placeholder="请输入部门名" class="layui-input">
+                        <input type="text" name="deptName" lay-verify="deptName" th:value="${deptInfo.deptName}" autocomplete="off" placeholder="请输入部门名" class="layui-input">
                     </div>
                 </div>
 
@@ -34,8 +34,8 @@
                         上级菜单
                     </label>
                     <div class="layui-input-block">
-                        <input type="number" id="parentId" th:value="${department.parentId}" name="parentId"  lay-verify="parentId" style="display:none;width: 0px" autocomplete="off" class="layui-input">
-                        <ul id="dataTree" class="dtree" data-id="0" th:data-value="${department.parentId}"></ul>
+                        <input type="number" id="deptParentId" th:value="${deptInfo.deptParentId}" name="deptParentId"  lay-verify="deptParentId" style="display:none;width: 0px" autocomplete="off" class="layui-input">
+                        <ul id="dataTree" class="dtree" data-id="0" th:data-value="${deptInfo.deptParentId}"></ul>
                     </div>
                 </div>
 
@@ -43,14 +43,14 @@
                     <label class="layui-form-label">
                         <span style="color: red">*</span>排序</label>
                     <div class="layui-input-block">
-                        <input type="text"  name="sort"  th:value="${department.sort}" lay-verify="sort" autocomplete="off" placeholder="请输入排序" class="layui-input">
+                        <input type="text" name="sequence"  th:value="${deptInfo.sequence}" lay-verify="sequence" autocomplete="off" placeholder="请输入排序" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">部门状态</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="status" value="1"  title="正常" checked>
-                        <input type="radio" name="status" value="0"  title="停用">
+                        <input type="radio" name="state" value="1"  title="正常" checked>
+                        <input type="radio" name="state" value="0"  title="停用">
                     </div>
                 </div>
 
@@ -96,12 +96,11 @@
             selectCardHeight: "150"
         });
 
-        var param = dtree.getNowParam("dataTree");
-        formDate = $("#parentId");
+        // var param = dtree.getNowParam("dataTree");
         dtree.on("node('dataTree')" ,function(obj){
             var param = dtree.getNowParam("dataTree");
-            $("#parentId").val(param.nodeId);
-            formDate = $("#parentId");
+            $("#deptParentId").val(param.nodeId);
+
         });
         form.verify({
             deptName: function (value) {

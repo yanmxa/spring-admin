@@ -4,7 +4,7 @@
 <mapper namespace="com.nood.hrm.mapper.RoleUserMapper">
 
     <update id="updateRoleUser">
-        update sys_role_user t
+        update hrm.sys_role_user t
         <set>
             <if test="roleId != null">
                 roleId = #{roleId},

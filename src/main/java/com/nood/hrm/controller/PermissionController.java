@@ -71,7 +71,7 @@ public class PermissionController {
     @ResponseBody
     @ApiOperation(value = "获取菜单", notes = "获取用户所属角色下能显示的菜单")//描述
 //    @ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
-    public Response<Permission> getMenu(Long userId) {
+    public Response<Permission> getMenu(String userId) {
         return permissionService.getMenu(userId);
     }
 

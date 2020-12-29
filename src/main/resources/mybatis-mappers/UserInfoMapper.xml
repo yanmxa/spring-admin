@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nood.hrm.mapper.UserInfoMapper">
+
+    <update id="updateUser">
+        update SD_UserInfo t
+        <set>
+
+            <if test="DeptId != null">
+                DeptId = #{DeptId},
+            </if>
+
+            <if test="DeptName != null">
+                DeptName = #{DeptName},
+            </if>
+            <if test="NameCn != null">
+                NameCn = #{NameCn},
+            </if>
+            <if test="Password != null">
+                Password = #{Password},
+            </if>
+            <!--<if test="NamePy != null">-->
+                <!--NamePy = #{NamePy},-->
+            <!--</if>-->
+            <!--<if test="telephone != null">-->
+                <!--telephone = #{telephone},-->
+            <!--</if>-->
+            <!--<if test="Gender != null">-->
+                <!--Gender = #{Gender},-->
+            <!--</if>-->
+            <!--<if test="Education != null">-->
+                <!--Education = #{Education},-->
+            <!--</if>-->
+            <if test="OfficeTel != null">
+                OfficeTel = #{OfficeTel},
+            </if>
+            <!--<if test="OfficeLocation != null">-->
+                <!--OfficeLocation = #{OfficeLocation},-->
+            <!--</if>-->
+            <!--<if test="Title != null">-->
+                <!--Title = #{Title},-->
+            <!--</if>-->
+        </set>
+        where t.Userid = #{Userid}
+    </update>
+
+</mapper>

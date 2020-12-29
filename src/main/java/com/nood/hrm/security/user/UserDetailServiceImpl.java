@@ -1,47 +1,51 @@
 package com.nood.hrm.security.user;
 
-import com.nood.hrm.mapper.PermissionMapper;
-import com.nood.hrm.mapper.RoleMapper;
-import com.nood.hrm.model.User;
-import com.nood.hrm.service.UserService;
-import org.springframework.beans.BeanUtils;
+import com.nood.hrm.model.Role;
+import com.nood.hrm.model.UserInfo;
+import com.nood.hrm.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PermissionMapper permissionMapper;
-
-    @Autowired
-    private RoleMapper roleMapper;
+    private UserInfoService userInfoService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
         // actually the username is the userNo
-        User user = userService.getUser(username);
+//        User user = userService.getUser(userId);
+        UserInfo userInfo = userInfoService.getUser(userId);
 
-        if (user == null) {
-            throw new UsernameNotFoundException("工号 " + username + " 不存在！");
-        } else if (user.getStatus() == User.Status.DISABLED){
-            throw new LockedException("用户被锁定, 请联系管理员");
+
+        if (userInfo == null) {
+            throw new UsernameNotFoundException("工号 " + userId + " 不存在！");
         }
+//        else if (userInfo == User.Status.DISABLED){
+//            throw new LockedException("用户被锁定, 请联系管理员");
+//        }
+
+        //        BeanUtils.copyProperties(user, loginUser);
 
         LoginUser loginUser = new LoginUser();
-        BeanUtils.copyProperties(user, loginUser);
+        loginUser.setUserId(userInfo.getUserid());
+        loginUser.setUserName(userInfo.getNameCn());
+        loginUser.setPassword(userInfo.getPassword());
+        loginUser.setDepartmentId(userInfo.getDeptId());
 
-        loginUser.setPermissions(permissionMapper.listByUserId(user.getId()));
-        loginUser.setRoles(roleMapper.getRoleByUserId(user.getId()));
+        loginUser.setPermissions(userInfoService.getPermissionByUserId(userId));
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(userInfoService.getRoleByUserId(userId));
+        loginUser.setRoles(roles);
 
         return loginUser;
     }

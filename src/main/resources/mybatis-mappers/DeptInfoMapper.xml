@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nood.hrm.mapper.DeptInfoMapper">
+
+    <sql id="selectDeptVo">
+        select d.id, d.deptParentId, d.deptId, d.deptName, d.deptShortName,d.state, d.sequence
+        from DeptInfo d
+    </sql>
+
+    <select id="getFuzzyDept" resultType="com.nood.hrm.model.DeptInfo">
+        <include refid="selectDeptVo"/>
+        <where>
+            <if test="deptInfo.deptName != null and deptInfo.deptName != ''">
+                AND d.deptName like CONCAT('%', #{deptInfo.deptName}, '%')
+            </if>
+            <!--<if test="deptInfo.state != null and deptInfo.state != ''">-->
+                <!--AND d.state = #{deptInfo.state}-->
+            <!--</if>-->
+            <!-- 数据范围过滤 -->
+            <!-- ${params.dataScope} -->
+        </where>
+        order by d.sequence
+    </select>
+
+
+    <select id="buildAll" resultType="com.nood.hrm.dto.DepartmentDto">
+        select d.deptId as id, d.deptParentId as parentId, d.deptName as title
+            from DeptInfo d
+
+    </select>
+
+
+    <select id="selectDeptByNo" parameterType="String" resultType="com.nood.hrm.model.DeptInfo">
+		select d.id, d.deptParentId, d.deptId, d.deptName, d.state, d.sequence
+		from DeptInfo d
+		where d.deptId = #{deptId}
+	</select>
+
+    <select id="checkDeptNameUnique" resultType="com.nood.hrm.model.DeptInfo">
+        <include refid="selectDeptVo"/>
+        where d.deptName= #{deptName} and d.deptParentId = #{parentId} limit 1
+    </select>
+
+    <select id="selectChildrenDeptById" parameterType="integer" resultType="com.nood.hrm.model.Department">
+		select * from sys_department where find_in_set(#{id}, ancestors)
+	</select>
+
+    <select id="selectRoleDeptTree" parameterType="integer" resultType="com.nood.hrm.dto.DepartmentDto">
+		select d.id as id, d.parentId, d.deptName as title
+		from sys_department d
+			left join sys_role_department rd on d.id = rd.departmentId
+		where rd.roleId = #{id}
+		order by d.parentId
+	</select>
+
+    <update id="updateDeptChildren" parameterType="java.util.List">
+        update sys_department set ancestors =
+        <foreach collection="depts" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.id} then #{item.ancestors}
+        </foreach>
+        where id in
+        <foreach collection="depts" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="updateDept" parameterType="com.nood.hrm.model.DeptInfo">
+        update DeptInfo
+        <set>
+            <!--<if test="deptId != null and deptId != 0">deptId = #{deptId},</if>-->
+            <if test="deptName != null and deptName != ''">`deptName` = #{deptName},</if>
+            <if test="deptParentId != null and deptParentId != ''">`deptParentId`= #{deptParentId},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <!--<if test="sort != null">sort = #{sort},</if>-->
+            <if test="sequence != null">sequence = #{sequence},</if>
+        </set>
+        where deptId = #{deptId}
+    </update>
+
+    <update id="updateDeptStatus" parameterType="com.nood.hrm.model.DeptInfo">
+        update DeptInfo
+        <set>
+            <if test="state != null and state != ''">state = #{state},</if>
+        </set>
+        where deptId = #{deptId}
+    </update>
+
+    <select id="selectNormalChildrenDeptById" parameterType="String" resultType="int">
+		select count(*) from DeptInfo where state = "1" and deptParentId = #{deptId}
+	</select>
+
+
+
+    <select id="checkDeptExistUser" parameterType="integer" resultType="int">
+		select count(1) from sys_user where departmentId = #{deptId}
+	</select>
+
+    <delete id="deleteDeptById" parameterType="string">
+		delete from DeptInfo where deptId =#{deptId}
+	</delete>
+</mapper>
