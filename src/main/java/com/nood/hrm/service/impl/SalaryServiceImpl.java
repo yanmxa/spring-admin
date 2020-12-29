@@ -251,8 +251,10 @@ public class SalaryServiceImpl implements SalaryService {
                 String columnKey = PinyinUtil.hanziToPinyin(originKey, "_");
                 SalaryMeta salaryMeta = salaryMetaMapper.getMetaByName(originKey);
 
-                index2Column.put(cellNum, columnKey);
-                index2Numeric.put(cellNum, salaryMeta.getIsDecimal());
+                if (salaryMeta != null) {
+                    index2Column.put(cellNum, columnKey);
+                    index2Numeric.put(cellNum, salaryMeta.getIsDecimal());
+                }
             }
 
             //读取行
