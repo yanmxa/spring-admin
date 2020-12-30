@@ -172,7 +172,8 @@ public class SalaryController {
                 columnName.equals(salaryCustomDto.dateAlias) ||
                 columnName.equals(salaryCustomDto.employeeNameAlias) ||
                 columnName.equals(salaryCustomDto.employeeNoAlias) ||
-                columnName.equals(salaryCustomDto.noAlias)) {
+                columnName.equals(salaryCustomDto.noAlias) ||
+                columnName.equals(salaryCustomDto.actualIncomeAlisa)) {
             return true;
         }
         return false;

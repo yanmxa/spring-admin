@@ -76,7 +76,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 ////            roleList.add(role);
 ////        });
 //        roleList.add();
-        if (roleUser == null) return null;
+        if (roleUser == null) return roleMapper.getById(8);
         return roleMapper.getById(roleUser.getRoleId());
     }
 
@@ -114,7 +114,9 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     private String getDeptNameByDeptId(String deptId) {
-        return deptInfoMapper.getDeptById(deptId).getDeptName();
+        DeptInfo deptInfo = deptInfoMapper.getDeptById(deptId);
+        if (deptInfo == null) return "无";
+        return deptInfo.getDeptName();
     }
 
     @Override

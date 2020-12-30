@@ -15,6 +15,7 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
     private String date;
     private String year;
     private String month;
+    private String no;
 
 //    private String departmentName;
 
@@ -30,6 +31,6 @@ public class SalaryCustomDto extends BaseEntity<Integer> {
     public String dateAlias = "yue_fen";                           // 日期，用作数据过滤
 
     public String shouldIncomeAlisa = "ying_fa_he_ji";
-    public String actualIncomeAlisa = "shi_fa_he_ji";
+    public String actualIncomeAlisa = "shi_fa_gong_zi";
 
 }

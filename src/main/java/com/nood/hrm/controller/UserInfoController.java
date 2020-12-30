@@ -112,7 +112,6 @@ public class UserInfoController {
     @ApiOperation(value="删除用户")
     @Log("删除用户")
     public Response deleteUser(@RequestParam("Userid") String userId) {
-        System.out.println(userId);
         int count = userInfoService.deleteUserById(userId);
         if (count > 0) return Response.success();
         else return Response.failure();

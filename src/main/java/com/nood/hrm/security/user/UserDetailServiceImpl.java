@@ -48,7 +48,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         loginUser.setPermissions(userInfoService.getPermissionByUserId(loginUser.getUserId()));
 
         List<Role> roles = new ArrayList<>();
-        roles.add(userInfoService.getRoleByUserId(loginUser.getUserId()));
+        Role role = userInfoService.getRoleByUserId(loginUser.getUserId());
+        if (role != null) roles.add(role);
         loginUser.setRoles(roles);
 
         return loginUser;

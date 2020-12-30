@@ -60,4 +60,9 @@ public interface SalaryMapper {
 
 
     void createSalaryTable(String tableName);
+
+    @Delete("delete from ${table} where ${salaryCustomDto.dateAlias} = #{salaryCustomDto.date} " +
+            "and ${salaryCustomDto.employeeNoAlias} = #{salaryCustomDto.no}")
+    int deleteByNoAndDate(@Param("salaryCustomDto") SalaryCustomDto salaryCustomDto,
+                           @Param("table") String table);
 }

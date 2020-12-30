@@ -4,6 +4,8 @@ import sun.misc.BASE64Encoder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MD5Util {
     private static final String SALT = "wuqian";
@@ -61,5 +63,13 @@ public class MD5Util {
 
     public static void main(String[] args) {
         System.out.println(md5b64("111111"));
+
+        Map<Integer, Integer> index2Numeric = new HashMap<>();
+
+
+        if ( index2Numeric.get("1") == 1) {
+
+
+        }
     }
 }

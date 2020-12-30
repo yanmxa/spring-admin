@@ -37,8 +37,20 @@
     </div>
 </div>
 <script>
+
+
+
     layui.use(['upload','element'], function () {
         var $ = layui.jquery, upload = layui.upload, element=layui.element;
+
+        var uploadButton = document.getElementById("uploadId");
+        uploadButton.onclick = function(){
+
+            $("#uploadId").hide()
+            // $("#uploadId").attr("disabled", true);
+        }
+
+
         //选完文件后不自动上传
         upload.render({
             elem: '#selectId'
@@ -64,14 +76,15 @@
 
                     var n = 0, timer = setInterval(function(){
                         n = n + Math.random()*10|0;
-                        if(n>100){
+                        if(n > 100){
                             n = 100;
+                            $("#uploadId").show()
                             clearInterval(timer);
                         }
                         element.progress('progressBar', n+'%');
                     }, 20 + Math.random() * 100);
 
-                    // layer.msg('上传成功!', {icon: 1, time: 2000, offset: 'rt'});
+                    // $("#uploadId").attr("disabled", false);
                 }
             }
             ,error: function (data) {
@@ -79,6 +92,11 @@
             }
         });
     })
+
+
+
+
+
 </script>
 
 <!--<hr>-->
@@ -121,6 +139,7 @@
 </div>
 
 <script>
+
     layui.use('table', function(){
         var table = layui.table,
             form = layui.form;
@@ -155,7 +174,7 @@
                 columns
             ],
             done: function(){
-                // checkPermission()
+                checkPermission()
             }
         });
 

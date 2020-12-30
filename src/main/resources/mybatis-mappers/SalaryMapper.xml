@@ -113,6 +113,37 @@
         order by ${salaryCustomDto.employeeNoAlias}
     </select>
 
+    <select id="getSalaryByNoAndDate" resultType="java.util.HashMap">
+        select
+        *
+        from ${table}
+        <where>
+
+            <if test="salaryCustomDto.date != null and salaryCustomDto.date != ''">
+                AND ${salaryCustomDto.dateAlias} like CONCAT('%', #{salaryCustomDto.date} , '%')
+            </if>
+
+            <if test="no != null and no != ''">
+                AND ${salaryCustomDto.employeeNoAlias} = #{no}
+            </if>
+
+        </where>
+        order by ${salaryCustomDto.employeeNoAlias}
+    </select>
+
+    <!--<delete id="deleteByNoAndDate">-->
+      <!--delete from ${table}-->
+        <!--<where>-->
+            <!--<if test="salaryCustomDto.date != null and salaryCustomDto.date != ''">-->
+                <!--AND ${salaryCustomDto.dateAlias} = #{salaryCustomDto.date}-->
+            <!--</if>-->
+            <!--<if test="salaryCustomDto.no != null and salaryCustomDto.no != ''">-->
+                <!--AND ${salaryCustomDto.employeeNoAlias} = #{salaryCustomDto.no}-->
+            <!--</if>-->
+
+        <!--</where>-->
+
+    <!--</delete>-->
 
     <!--@Update("CREATE TABLE IF NOT EXISTS ${tableName} `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '表id',\n" +-->
     <!--"  `updateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +-->

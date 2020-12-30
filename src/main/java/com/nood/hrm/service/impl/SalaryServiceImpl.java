@@ -262,7 +262,7 @@ public class SalaryServiceImpl implements SalaryService {
                 Row row = sheet.getRow(rowNum);
                 if(row!=null) {
                     for(int cellNum = 0;cellNum < row.getLastCellNum();cellNum++){
-                        if (row.getCell(cellNum) == null) continue;
+                        if (row.getCell(cellNum) == null || index2Column.get(cellNum) == null) continue;
                         if (index2Numeric.get(cellNum) == 1) {
                             column2record.put(index2Column.get(cellNum), row.getCell(cellNum).getNumericCellValue());
                         } else {
@@ -271,6 +271,14 @@ public class SalaryServiceImpl implements SalaryService {
                         }
                     }
 //                    System.out.println(column2record);
+                    SalaryCustomDto condition = new SalaryCustomDto();
+                    String no = column2record.get(condition.getEmployeeNoAlias()).toString();
+                    String date = column2record.get(condition.getDateAlias()).toString();
+                    condition.setNo(no);
+                    condition.setDate(date);
+//                    Map<String, Object> records = salaryMapper.getSalaryByNoAndDate(condition, latestSalaryTableName);
+                    salaryMapper.deleteByNoAndDate(condition, latestSalaryTableName);
+//                    salaryMapper.getSalaryByNoAndYearAndMonth(new SalaryCustomDto(), no, latestSalaryTableName);
                     salaryMapper.insertWithMap(column2record, latestSalaryTableName);
                 }
             }
@@ -339,8 +347,8 @@ public class SalaryServiceImpl implements SalaryService {
                     }
                 })
                 .sorted((o1, o2) -> {
-                    Integer s1 = Integer.valueOf(o1.getOrDefault(salaryCustomDto.employeeNoAlias, "0").toString());
-                    Integer s2 = Integer.valueOf(o2.getOrDefault(salaryCustomDto.employeeNoAlias, "0").toString());
+                    Integer s1 = Integer.valueOf(o1.getOrDefault(salaryCustomDto.getNoAlias(), "0").toString());
+                    Integer s2 = Integer.valueOf(o2.getOrDefault(salaryCustomDto.getNoAlias(), "0").toString());
                     return s1.compareTo(s2);
                 })
                 .collect(Collectors.toList());
@@ -406,7 +414,7 @@ public class SalaryServiceImpl implements SalaryService {
             for (String col : averageRecord.keySet()) {
                 if (decimalColumns.contains(col)) {
                     BigDecimal originalValue = (BigDecimal) averageRecord.getOrDefault(col, new BigDecimal(0.0));
-                    averageRecord.put(col, originalValue.divide(new BigDecimal(salaryByFilter.size())));
+                    averageRecord.put(col, originalValue.divide(new BigDecimal(salaryByFilter.size()), 2, BigDecimal.ROUND_DOWN));
                 }
             }
 
