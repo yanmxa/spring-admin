@@ -49,8 +49,9 @@ public class DepartmentInfoServiceImpl implements DepartmentInfoService {
 
         List<DepartmentDto> selectRoleDeptTree = deptIds.stream().map(id -> {
             DeptInfo dept = deptInfoMapper.getDeptById(id);
-            return getDto(dept);
-        }).collect(Collectors.toList());
+            if (dept != null) return getDto(dept);
+            else return null;
+        }).filter(e -> e != null).collect(Collectors.toList());
 
         List<DepartmentDto> buildAll = deptInfoMapper.getFuzzyDept(new DeptInfo()).stream()
                 .map(e -> getDto(e))
@@ -71,9 +72,9 @@ public class DepartmentInfoServiceImpl implements DepartmentInfoService {
 
     private DepartmentDto getDto(DeptInfo deptInfo) {
         DepartmentDto departmentDto = new DepartmentDto();
-        departmentDto.setId(deptInfo.getDeptId());
+        departmentDto.setId(Integer.parseInt(deptInfo.getDeptId()));
         departmentDto.setTitle(deptInfo.getDeptName());
-        departmentDto.setParentId(deptInfo.getDeptParentId());
+        departmentDto.setParentId(Integer.parseInt(deptInfo.getDeptParentId()));
         return departmentDto;
     }
 

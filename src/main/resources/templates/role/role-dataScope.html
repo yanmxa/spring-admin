@@ -40,7 +40,7 @@
                 <div class="layui-form-item" id="authDataScope" th:style="'display:' + @{(${role.dataScope == '2' } ? 'block' : 'none')} + ''">
                     <label class="layui-form-label">数据权限</label>
                     <div class="layui-input-block">
-                        <input type="hidden" id="inputRoleId" th:value="${role.id}">
+                        <input type="text" id="inputRoleId" th:value="${role.id}" style="display:none;">
                         <ul id="dataTree" class="dtree" data-id="0"></ul>
                     </div>
                 </div>
@@ -61,6 +61,7 @@
     </div>
 </form>
 <script>
+
     layui.config({
         base: '/'
     }).extend({
@@ -82,8 +83,8 @@
             url: "/department/build/"+roleId,
             dataFormat: "list",  //配置data的风格为list
             checkbar: true,  //开启复选框
-            checkbarType: "p-casc",
-            // checkbarType: "all",
+            // checkbarType: "p-casc",
+            checkbarType: "all",
         });
         form.verify({
             name: function(value){

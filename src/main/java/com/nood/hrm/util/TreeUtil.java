@@ -38,11 +38,29 @@ public class TreeUtil {
     }
 
 
+//    public static List<DepartmentDto> deptTree(List<DepartmentDto> listById, List<DepartmentDto> lists ){
+//        List<String> collect = listById.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+//        List<String> collect1 = lists.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+//        // 遍历list2
+//        for (String item : collect) {
+//            // 如果存在这个数
+//            if (collect1.contains(item)) {
+//                DepartmentDto deptDto = new DepartmentDto();
+//                int i = collect1.indexOf(item);
+//                deptDto = lists.get(i);
+//                deptDto.setCheckArr("1");
+//                lists.set(i, deptDto);
+//            }
+//        }
+//        return lists;
+//    }
+
+
     public static List<DepartmentDto> deptTree(List<DepartmentDto> listById, List<DepartmentDto> lists ){
-        List<String> collect = listById.stream().map(DepartmentDto::getId).collect(Collectors.toList());
-        List<String> collect1 = lists.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+        List<Integer> collect = listById.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+        List<Integer> collect1 = lists.stream().map(DepartmentDto::getId).collect(Collectors.toList());
         // 遍历list2
-        for (String item : collect) {
+        for (Integer item : collect) {
             // 如果存在这个数
             if (collect1.contains(item)) {
                 DepartmentDto deptDto = new DepartmentDto();

@@ -1,14 +1,13 @@
 package com.nood.hrm.dto;
 
-import com.nood.hrm.model.BaseEntity;
 import lombok.Data;
 
 @Data
-public class DepartmentDto extends BaseEntity {
+public class DepartmentDto{
 
-    private String id;
+    private Integer id;
 
-    private String parentId;
+    private Integer parentId;
 
     private String checkArr = "0";
 
