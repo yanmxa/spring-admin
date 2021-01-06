@@ -384,10 +384,12 @@ public class SalaryServiceImpl implements SalaryService {
      */
     private void appendAverageRecord(List<Map<String,Object>> salaryByFilter, SalaryCustomDto salaryCustomDto) {
         if (salaryByFilter.size() > 0) {
-            String tableName = getSalaryTableName(salaryCustomDto.getYear());
-            if (Integer.parseInt(salaryCustomDto.getYear()) > salaryMetaMapper.getLatestVersion()) {
-                tableName = getLatestSalaryTableName();
+
+            String tableName = getLatestSalaryTableName();
+            if (salaryCustomDto.getYear() != null && !"".equals(salaryCustomDto.getYear())) {
+                tableName = getSalaryTableName(salaryCustomDto.getYear());
             }
+
             List<Map<String, Object>> onePerson = salaryMapper.getSalaryByNoAndYearAndMonth(
                     salaryCustomDto,
                     (String) salaryByFilter.get(0).get(salaryCustomDto.getEmployeeNoAlias()),
@@ -433,9 +435,9 @@ public class SalaryServiceImpl implements SalaryService {
         List<Map<String,Object>> salaryByFuzzyName = null;
 
         List<String> columns = getActiveColumns();
-        String tableName = getSalaryTableName(salaryCustomDto.getYear());
-        if (Integer.parseInt(salaryCustomDto.getYear()) > salaryMetaMapper.getLatestVersion()) {
-            tableName = getLatestSalaryTableName();
+        String tableName = getLatestSalaryTableName();
+        if (salaryCustomDto.getYear() != null && !"".equals(salaryCustomDto.getYear())) {
+            tableName = getSalaryTableName(salaryCustomDto.getYear());
         }
 
         if (salaryCustomDto.getMonth() != null && !"".equals(salaryCustomDto.getMonth())) {

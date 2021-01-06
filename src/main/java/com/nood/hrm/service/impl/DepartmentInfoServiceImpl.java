@@ -72,9 +72,9 @@ public class DepartmentInfoServiceImpl implements DepartmentInfoService {
 
     private DepartmentDto getDto(DeptInfo deptInfo) {
         DepartmentDto departmentDto = new DepartmentDto();
-        departmentDto.setId(Integer.parseInt(deptInfo.getDeptId()));
+        departmentDto.setId(deptInfo.getDeptId());
         departmentDto.setTitle(deptInfo.getDeptName());
-        departmentDto.setParentId(Integer.parseInt(deptInfo.getDeptParentId()));
+        departmentDto.setParentId(deptInfo.getDeptParentId());
         return departmentDto;
     }
 

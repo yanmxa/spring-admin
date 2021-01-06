@@ -57,10 +57,10 @@ public class TreeUtil {
 
 
     public static List<DepartmentDto> deptTree(List<DepartmentDto> listById, List<DepartmentDto> lists ){
-        List<Integer> collect = listById.stream().map(DepartmentDto::getId).collect(Collectors.toList());
-        List<Integer> collect1 = lists.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+        List<String> collect = listById.stream().map(DepartmentDto::getId).collect(Collectors.toList());
+        List<String> collect1 = lists.stream().map(DepartmentDto::getId).collect(Collectors.toList());
         // 遍历list2
-        for (Integer item : collect) {
+        for (String item : collect) {
             // 如果存在这个数
             if (collect1.contains(item)) {
                 DepartmentDto deptDto = new DepartmentDto();

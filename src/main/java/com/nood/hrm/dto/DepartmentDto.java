@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class DepartmentDto{
 
-    private Integer id;
+    private String id;
 
-    private Integer parentId;
+    private String parentId;
 
     private String checkArr = "0";
 
